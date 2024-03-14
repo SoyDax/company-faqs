@@ -23,6 +23,7 @@ class AdminSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => '$2y$12$Ycs4.QxaXGi26/kwJivO1OdZWF73znsp9lsT/wQkO0Es/JzGL5SWe',
             'remember_token' => Str::random(10),
+            'department_id' => 1, // Asigna el departamento 1
 
         ])->assignRole('admin');
     }

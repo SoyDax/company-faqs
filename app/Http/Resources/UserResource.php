@@ -18,6 +18,7 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'department' => $this->department->name, // incluye el nombre del departamento al construir el recurso. El modelo User tiene una relación con el modelo Department.
            'roles' => $this->getRoleNames(),
            'permissions' => $this->getPermissionNames(),
         ];

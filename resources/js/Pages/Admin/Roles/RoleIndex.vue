@@ -1,19 +1,49 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
+
+import Table from '@/Components/Table.vue';
+import TableRow from '@/Components/TableRow.vue';
+import TableHeaderCell from '@/Components/TableHeaderCell.vue';
+import TableDataCell from '@/Components/TableDataCell.vue';
+
+defineProps(['roles']);
 </script>
+
 
 <template>
     <Head title="Roles" />
 
     <AdminLayout>
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">ROLE INDEX!</div>
-                </div>
-            </div>
+        <div class="max-w-7xl mx-auto py-4">
+        <div class="flex justify-between">
+          <h1>Role Index Page</h1>
+          <Link
+            :href="route('roles.create')"
+            class="px-3 py-2 text-white font-semibold bg-indigo-500 hover:bg-indigo-700 rounded"
+            >Nuevo Rol</Link
+          >
         </div>
+        <div class="mt-6">
+          <Table>
+            <template #header>
+              <TableRow>
+                <TableHeaderCell>ID</TableHeaderCell>
+                <TableHeaderCell>Name</TableHeaderCell>
+                <TableHeaderCell>Action</TableHeaderCell>
+              </TableRow>
+            </template>
+            <template #default>
+              <TableRow v-for="role in roles" :key="role.id" class="border-b">
+                <TableDataCell>{{ role.id }}</TableDataCell>
+                <TableDataCell>{{ role.name }}</TableDataCell>
+                <TableDataCell>Edit/Delete</TableDataCell>
+        
+              </TableRow>
+            </template>
+          </Table>
+        </div>
+      </div>
     </AdminLayout>
 </template>

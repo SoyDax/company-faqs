@@ -18,9 +18,16 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+// Relacion con el modelo Department
+     public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
     protected $fillable = [
         'name',
         'email',
+        'department_id',
         'password',
     ];
 
