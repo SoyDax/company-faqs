@@ -20,7 +20,7 @@ class PermissionController extends Controller
             'permissions' => PermissionResource::collection(Permission::all())
         ]);
     }
-
+// sfdgdsgdsgsdgsdgs
     /**
      * Show the form for creating a new resource.
      */
