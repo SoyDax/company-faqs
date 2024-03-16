@@ -7,20 +7,27 @@ import {
     useForm
 } from '@inertiajs/vue3';
 
-import Checkbox from '@/Components/Checkbox.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 
+const props = defineProps( {
+    role: {
+        type: Object,
+        required: true
+    }
+    
+});
+
 const form = useForm({
-    name: "",
-    permissions: [],
+    name: props.role.name
+   
 });
 </script>
 
 <template>
-<Head title="Crear nuevo rol" />
+<Head title="Actualizar rol" />
 
 <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">
@@ -35,12 +42,12 @@ const form = useForm({
 
         <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
 
-            <h1 class="text-2xl font-semibold text-indigo-700">CREAR NUEVO ROL</h1>
-            <form @submit.prevent="form.post(route('roles.store'))">
+            <h1 class="text-2xl font-semibold text-indigo-700">Actualizar ROL</h1>
+            <form @submit.prevent="form.put(route('roles.update', role.id))">
                 <div class="mt-4">
                     <InputLabel for="name" value="Nombre" />
 
-                    <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" autofocus autocomplete="name" />
+                    <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" autofocus autocomplete="username" />
 
                     <InputError class="mt-2" :message="form.errors.name" />
                 </div>
@@ -48,7 +55,7 @@ const form = useForm({
                 <div class="flex items-center mt-4">
 
                     <PrimaryButton class="ms-0" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                        Crear
+                        Actualizar
                     </PrimaryButton>
                 </div>
             </form>

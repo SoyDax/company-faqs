@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateDepartmentRequest;
 use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -25,25 +27,20 @@ class DepartmentController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): Response
     {
-        //
+        return Inertia :: render(component:'Admin/Departments/Create');
+   
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+    public function store(CreateDepartmentRequest $request): RedirectResponse
     {
-        //
+        Department::create($request->validated());
+        return to_route(route: 'departments.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(Department $department)
     {
         //
@@ -52,24 +49,27 @@ class DepartmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Department $department)
+    public function edit(Department $department): Response
+
     {
-        //
+       return Inertia::render(component: 'Admin/Departments/Edit',props:[
+           'department' => new DepartmentResource($department)
+       ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Department $department)
+    public function update(CreateDepartmentRequest $request,  Department $department): RedirectResponse
     {
-        //
-    }
+        $department->update($request->validated());
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
+        return to_route(route: 'departments.index');
+    }
+   
     public function destroy(Department $department)
     {
-        //
+       
+         $department->delete();
+
+         return back();
     }
 }
