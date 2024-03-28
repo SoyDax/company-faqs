@@ -9,15 +9,37 @@ import {
     Link,
     useForm
 } from '@inertiajs/vue3';
+import {
+    onMounted,
+    watch,
+    ref
+} from 'vue';
+import VueMultiselect from 'vue-multiselect'
+
+defineProps({
+    roles: Array,
+    permissions: Array,
+    departments: Array,
+});
 
 const form = useForm({
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
+    department_id: '',
+    roles: [],
+    permissions: [],
 });
 
-const submit = () => {
+const selectedDepartment = ref(null); // Crea una referencia para el departamento seleccionado
+watch(selectedDepartment, (newVal) => {
+    if (newVal) {
+        form.department_id = newVal.id; // Actualiza el department_id en el formulario cuando se selecciona un nuevo departamento
+    }
+});
+
+const submit = () => {  
     form.post(route('users.store'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
@@ -74,6 +96,23 @@ const submit = () => {
                     <InputError class="mt-2" :message="form.errors.password_confirmation" />
                 </div>
 
+                
+                <div class=" mt-4 ">
+                    <InputLabel for="departments" value="Departamentos" />
+                    <VueMultiselect v-model="selectedDepartment" :options="departments" :multiple="false" :close-on-select="true" placeholder="Presiona para ver departamento" label="name" track-by="id" />
+                </div>
+
+                <div class=" mt-4 ">
+                    <InputLabel for="roels" value="Roles" />
+                    <VueMultiselect v-model="form.roles" :options="roles" :multiple="true" :close-on-select="true" placeholder="Presiona para ver permisos" label="name" track-by="id" />
+                </div>
+
+                <div class=" mt-4 ">
+                    <InputLabel for="permissions" value="Permisos" />
+                    <VueMultiselect v-model="form.permissions" :options="permissions" :multiple="true" :close-on-select="true" placeholder="Presiona para ver permisos" label="name" track-by="id" />
+                </div>
+
+
                 <div class="flex items-center justify-end mt-4">
 
                     <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
@@ -85,3 +124,4 @@ const submit = () => {
     </div>
 </AdminLayout>
 </template>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>

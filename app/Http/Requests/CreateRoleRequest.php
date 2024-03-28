@@ -18,7 +18,7 @@ class CreateRoleRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Get the validation rulses that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
@@ -26,6 +26,7 @@ class CreateRoleRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:30', Rule::unique(table: 'roles', column: 'name')->ignore($this->role)],
+            'permissions' => ['sometimes', 'array'],
         ];
     }
 }
