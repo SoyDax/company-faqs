@@ -24,7 +24,7 @@ defineProps(['users']);
 </svg>
 CREAR
 </Link>
-<h1>User Index Page</h1>
+<h1>User Index Pages</h1>
 </div>
         <div class="mt-6">
           <Table>
