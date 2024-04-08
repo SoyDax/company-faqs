@@ -13,6 +13,6 @@ class DepartmentSeeder extends Seeder
     public function run(): void
     {
          // indica que se crearan los registros
-         \App\Models\Department::factory(6)->create();
+         \App\Models\Department::factory(4)->create();
     }
 }

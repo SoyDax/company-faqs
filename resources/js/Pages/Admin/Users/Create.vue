@@ -47,6 +47,7 @@ const submit = () => {
 </script>
 
 <template>
+    <Head title="Crear Usuario" />
 <AdminLayout>
     <div class="max-w-7xl mx-auto py-4">
         <div class="flex justify-between">

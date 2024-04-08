@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RemoveRoleFromUserController;
 use App\Http\Controllers\RevokePermissionFromRoleController;
@@ -32,16 +33,8 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
-Route::resource('/users', UserController::class);
-Route::resource('/roles', RoleController::class);
-Route::resource('/permissions', PermissionController::class);
-Route::resource('/departments', DepartmentController::class);
-Route::delete('/roles/{role}/permissions/{permission}', RevokePermissionFromRoleController::class)
-->name('roles.permissions.destroy');
-Route::delete('/users/{user}/permissions/{permission}', RevokePermissionFromUserController::class)
-->name('users.permissions.destroy');
-Route::delete('/users/{user}/roles/{role}', RemoveRoleFromUserController::class)
-->name('users.roles.destroy');
+
+
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -53,9 +46,23 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
 });
+// solo el admin puede acceder a estas rutas
+Route::middleware(['auth', 'role:admin'])->prefix('/admin')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+    Route::resource('/users', UserController::class);
+    Route::resource('/roles', RoleController::class);
+    Route::resource('/permissions', PermissionController::class);
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    Route::delete('/roles/{role}/permissions/{permission}', RevokePermissionFromRoleController::class)
+        ->name('roles.permissions.destroy');
+    Route::delete('/users/{user}/permissions/{permission}', RevokePermissionFromUserController::class)
+        ->name('users.permissions.destroy');
+    Route::delete('/users/{user}/roles/{role}', RemoveRoleFromUserController::class)
+        ->name('users.roles.destroy');
+
 });
+// el admin puede acceder a la ruta pero no solo el admin sino también el moderador y el escritor.
+    Route::resource('/posts', PostController::class) ->middleware(['role:admin|moderador|escritor|user']);
+    Route::resource('/departments', DepartmentController::class)->middleware(['role:admin|moderador|escritor']);
 
 require __DIR__.'/auth.php';

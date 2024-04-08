@@ -9,7 +9,7 @@ import { Link } from '@inertiajs/vue3';
 import { usePermission } from '@/composables/permissions';
 
 const showingNavigationDropdown = ref(false);
-const { hasRole } = usePermission();
+const { hasRole, hasRoles } = usePermission();
 </script>
 
 <template>
@@ -40,6 +40,13 @@ const { hasRole } = usePermission();
                                 <NavLink   v-if="hasRole('admin')"
                                 :href="route('users.index')" :active="route().current('users.index')">
                                     Admin
+                                </NavLink>
+
+                                 <!-- solo lo pueden ver los que tengan los roles de admin, moderador y escritor -->
+                                <NavLink  
+                                v-if="hasRoles(['admin', 'moderador', 'escritor'])"
+                                :href="route('posts.index')" :active="route().current('posts.index')">
+                                    Posts
                                 </NavLink>
                                                         
                                 

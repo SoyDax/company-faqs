@@ -20,7 +20,7 @@ class UserSharedResource extends JsonResource
             'email' => $this->email,
             'department' => $this->department->name, // incluye el nombre del departamento al construir el recurso. El modelo User tiene una relación con el modelo Department.
            'roles' => $this->getRoleNames(),
-           'permissions' => $this->getPermissionNames(),
+           'permissions' => $this->getAllPermissions()-> pluck('name'),
         ];
         // return [
         //     'id' => $this->id,

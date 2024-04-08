@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Department;
 use App\Models\User; // Import the User clas
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -16,6 +17,11 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
+
+        Department::create([
+            'name' => 'Coordinacion desarrollo',
+        ]);
+
         User::create([
 
             'name' => 'admin',

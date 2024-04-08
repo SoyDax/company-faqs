@@ -28,7 +28,10 @@ class DepartmentController extends Controller
     }
 
     public function create(): Response
+    
     {
+            //    Autorizar para crear basado en los roles, en postPolicy
+            $this->authorize('create', Department::class);
         return Inertia :: render(component:'Admin/Departments/Create');
    
     }
@@ -36,6 +39,8 @@ class DepartmentController extends Controller
 
     public function store(CreateDepartmentRequest $request): RedirectResponse
     {
+         //    Autorizar para crear basado en los roles, en postPolicy
+         $this->authorize('create', Department::class);    
         Department::create($request->validated());
         return to_route(route: 'departments.index');
     }
@@ -52,6 +57,8 @@ class DepartmentController extends Controller
     public function edit(Department $department): Response
 
     {
+         //    Autorizar para crear basado en los roles, en postPolicy
+         $this->authorize('update',$department);    
        return Inertia::render(component: 'Admin/Departments/Edit',props:[
            'department' => new DepartmentResource($department)
        ]);
@@ -59,6 +66,8 @@ class DepartmentController extends Controller
 
     public function update(CreateDepartmentRequest $request,  Department $department): RedirectResponse
     {
+       //    Autorizar para crear basado en los roles, en postPolicy
+       $this->authorize('update',$department);   
         $department->update($request->validated());
 
 
@@ -67,6 +76,8 @@ class DepartmentController extends Controller
    
     public function destroy(Department $department)
     {
+          //    Autorizar para crear basado en los roles, en postPolicy
+       $this->authorize('delete',$department);   
        
          $department->delete();
 
