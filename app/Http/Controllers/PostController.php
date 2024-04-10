@@ -14,10 +14,11 @@ class PostController extends Controller
 {
     public function index(): Response
     {
-        $posts = Post::all();
-        return Inertia::render('Admin/Posts/PostIndex', [
-            'posts' => PostResource::collection($posts)
-        ]);
+        $posts = Post::paginate(3)->through(function ($post) {
+            return new PostResource($post);
+        });
+    
+        return Inertia::render('Admin/Posts/PostIndex', compact('posts'));
     }
     public function create(): Response
     {
