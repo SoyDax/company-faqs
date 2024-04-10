@@ -4,6 +4,7 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
 import { usePermission } from "@/composables/permissions";
 import { ref, watch, defineProps } from "vue";
+import { router } from '@inertiajs/vue3'
 import Table from "@/Components/Table.vue";
 import TableRow from "@/Components/TableRow.vue";
 import TableHeaderCell from "@/Components/TableHeaderCell.vue";
@@ -19,20 +20,36 @@ import Swal from "sweetalert2";
 // defineProps(["posts"]);
 const props = defineProps({
     posts:Object,
+    filters: Object,
+    from: Number, //propiedad from de la paginacion de laravel, representa el numero del primer elemento de lla pagina actual
 })
-// Buscador de registros
-const search = ref("");
+// Buscador de registros, filters mantiene busqueda al cambiar pagina
+const search = ref(props.filters.search);
 const perPage = ref(5);
 
+// instancia router
 watch(search, (value) => {
-    Inertia.get("/admin/Posts", {search: value});
-})
+    router.get("/posts",  { search: value, perPage: perPage.value },
+    {
+      preserveState: true,
+      replace: true,
+    }
+  );
+});
 
+function getPosts() {
+  router.get(
+    "/posts",
+    { perPage: perPage.value, search: search.value },
+    {
+      preserveState: true,
+      replace: true,
+    }
+  );
+}
 
 const form = useForm({});
-
 const { hasPermission } = usePermission();
-
 const confirmDeletePost = (id) => {
     Swal.fire({
         title: "Eliminar Faqs",
@@ -109,7 +126,7 @@ const confirmDeletePost = (id) => {
                                 </div>
                             </div>
                             <div class="flex">
-                                <select v-model="perPage" @change="getTags" class="
+                                <select v-model="perPage" @change="getPosts" class="
                                     px-4
                                     pr-8
                                     py-3
@@ -123,7 +140,7 @@ const confirmDeletePost = (id) => {
                                     ">
                                     <option value="5">Mostrar 5</option>
                                     <option value="10">Mostrar 10</option>
-                                    <option value="15">Mostrar 25</option>
+                                    <option value="15">Mostrar 15</option>
                                 </select>
                             </div>
                         </div>
@@ -133,14 +150,14 @@ const confirmDeletePost = (id) => {
                 <Table>
                     <template #header>
                         <TableRow>
-                            <TableHeaderCell>ID</TableHeaderCell>
+                            <TableHeaderCell>#</TableHeaderCell>
                             <TableHeaderCell>Titulo</TableHeaderCell>
                             <TableHeaderCell>Accion</TableHeaderCell>
                         </TableRow>
                     </template>
                     <template #default>
-                        <TableRow v-for="post in posts.data" :key="post.id" class="border-b">
-                            <TableDataCell>{{ post.id }}</TableDataCell>
+                        <TableRow v-for="(post, i) in posts.data" :key="post.id" class="border-b">
+                            <TableDataCell>{{ from + i }}</TableDataCell>
                             <TableDataCell>{{ post.title }}</TableDataCell>
                             <TableDataCell class="space-x-4">
                                 <!-- <template v-if="hasPermission('Editar FAQ')">  -->

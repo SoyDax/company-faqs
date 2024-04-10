@@ -12,13 +12,23 @@ use Inertia\Response;
 
 class PostController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $posts = Post::paginate(3)->through(function ($post) {
+         // Paginacion mostrar predeterminado 5
+        $perPage = $request->input('perPage') ?:5;
+        // funcion del buscador search
+        $posts = Post::query()
+        ->when($request->input('search'), function( $query, $search){
+            $query ->where('title','like', "%{$search}%");
+        })
+        ->paginate($perPage) // Paginacion mostrar mas registros
+        ->withQueryString()
+        ->through(function ($post) {
             return new PostResource($post);
         });
-    
-        return Inertia::render('Admin/Posts/PostIndex', compact('posts'));
+    //  estoy utilizando array_merge para combinar el array que se obtiene de compact('posts') con el array 'filters' => $request->only, el prop mantiene la busqueda al cambiar depagina,
+    //propiedad from de la paginacion de laravel, representa el numero del primer elemento de lla pagina actual
+    return Inertia::render('Admin/Posts/PostIndex', array_merge(compact('posts'), ['from' => $posts->firstItem(), 'filters' => $request->only(['search', 'perPage'])]));
     }
     public function create(): Response
     {
