@@ -4,7 +4,7 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
 import { usePermission } from "@/composables/permissions";
 import { ref, watch, defineProps } from "vue";
-import { router } from '@inertiajs/vue3'
+import { router } from "@inertiajs/vue3";
 import Table from "@/Components/Table.vue";
 import TableRow from "@/Components/TableRow.vue";
 import TableHeaderCell from "@/Components/TableHeaderCell.vue";
@@ -12,40 +12,41 @@ import TableDataCell from "@/Components/TableDataCell.vue";
 import Pagination from "@/Components/Pagination.vue";
 import Swal from "sweetalert2";
 
-
 //  defineProps({
 //    posts: Object,
 //  });
 
 // defineProps(["posts"]);
 const props = defineProps({
-    posts:Object,
+    posts: Object,
     filters: Object,
     from: Number, //propiedad from de la paginacion de laravel, representa el numero del primer elemento de lla pagina actual
-})
+});
 // Buscador de registros, filters mantiene busqueda al cambiar pagina
 const search = ref(props.filters.search);
 const perPage = ref(5);
 
 // instancia router
 watch(search, (value) => {
-    router.get("/posts",  { search: value, perPage: perPage.value },
-    {
-      preserveState: true,
-      replace: true,
-    }
-  );
+    router.get(
+        "/posts",
+        { search: value, perPage: perPage.value },
+        {
+            preserveState: true,
+            replace: true,
+        }
+    );
 });
 
 function getPosts() {
-  router.get(
-    "/posts",
-    { perPage: perPage.value, search: search.value },
-    {
-      preserveState: true,
-      replace: true,
-    }
-  );
+    router.get(
+        "/posts",
+        { perPage: perPage.value, search: search.value },
+        {
+            preserveState: true,
+            replace: true,
+        }
+    );
 }
 
 const form = useForm({});
@@ -107,37 +108,20 @@ const confirmDeletePost = (id) => {
                             <div class="flex-1">
                                 <div class="relative">
                                     <div class="absolute flex items-center ml-2 h-full">
-                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                         </svg>
                                     </div>
 
-                                    <input v-model="search" type="text" placeholder="Buscar registro" class="
-                                        px-8
-                                        py-3
-                                        w-full
-                                        md:w-2/6
-                                        rounded-md
-                                        bg-gray-200
-                                        border-transparent
-                                        focus:border-gray-500 focus:bg-white focus:ring-0
-                                        focus:border-gray-200
-                                    " />
+                                    <input v-model="search" type="text" placeholder="Buscar registro"
+                                        class="px-8 py-3 w-full md:w-2/6 rounded-md bg-gray-200 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 focus:border-gray-200" />
                                 </div>
                             </div>
                             <div class="flex">
-                                <select v-model="perPage" @change="getPosts" class="
-                                    px-4
-                                    pr-8
-                                    py-3
-                                    w-full
-                                    rounded-md
-                                    bg-gray-200
-                                    border-transparent
-                                    focus:border-gray-500 focus:bg-white focus:ring-0 
-                                    text-gray-500
-                                    focus:border-gray-200
-                                    ">
+                                <select v-model="perPage" @change="getPosts"
+                                    class="px-4 pr-8 py-3 w-full rounded-md bg-gray-200 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-gray-500 focus:border-gray-200">
                                     <option value="5">Mostrar 5</option>
                                     <option value="10">Mostrar 10</option>
                                     <option value="15">Mostrar 15</option>

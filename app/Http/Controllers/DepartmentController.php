@@ -13,24 +13,31 @@ use Inertia\Response;
 class DepartmentController extends Controller
 {
   
-    public function index() :Response
+    public function index(Request $request): Response
     {
-         // todos los registros de la tabla, se asignan a la variable departamentos
-        //  $departments = Department::all();
-         // se retorna mediante Inertia hacia la vista de la carpeta deptos y el archivo index
-         // a la vista se le envian los deptos como parametros o props
-        //  return Inertia::render('Admin/Departments/DepartmentIndex', ['departments' => $departments]);
 
-         return Inertia :: render('Admin/Departments/DepartmentIndex',[
+        // Paginacion mostrar predeterminado 5
+        $perPage = $request->input('perPage') ?:5;
+        // funcion del buscador search
+        $departments = Department::query()
+        ->when($request->input('search'), function( $query, $search){
+            $query ->where('name','like', "%{$search}%");
+        })
+        ->paginate($perPage) // Paginacion mostrar mas registros
+        ->withQueryString()
+        ->through(function ($department) {
+            return new DepartmentResource($department);
+        });
+        //  estoy utilizando array_merge para combinar el array que se obtiene de compact('departments') con el array 'filters' => $request->only, el prop mantiene la busqueda al cambiar depagina,
+        //propiedad from de la paginacion de laravel, representa el numero del primer elemento de lla pagina actual
+        return Inertia::render('Admin/Departments/DepartmentIndex', array_merge(compact('departments'), ['from' => $departments->firstItem(), 'filters' => $request->only(['search', 'perPage'])]));
             
-            'departments' => DepartmentResource::collection(Department::all())
-        ]);
     }
 
     public function create(): Response
     
     {
-            //    Autorizar para crear basado en los roles, en postPolicy
+            //    Autorizar para crear basado en los roles, en departmentPolicy
             $this->authorize('create', Department::class);
         return Inertia :: render(component:'Admin/Departments/Create');
    
@@ -39,7 +46,7 @@ class DepartmentController extends Controller
 
     public function store(CreateDepartmentRequest $request): RedirectResponse
     {
-         //    Autorizar para crear basado en los roles, en postPolicy
+         //    Autorizar para crear basado en los roles, en departmentPolicy
          $this->authorize('create', Department::class);    
         Department::create($request->validated());
         return to_route(route: 'departments.index');
@@ -57,7 +64,7 @@ class DepartmentController extends Controller
     public function edit(Department $department): Response
 
     {
-         //    Autorizar para crear basado en los roles, en postPolicy
+         //    Autorizar para crear basado en los roles, en departmentPolicy
          $this->authorize('update',$department);    
        return Inertia::render(component: 'Admin/Departments/Edit',props:[
            'department' => new DepartmentResource($department)
@@ -66,7 +73,7 @@ class DepartmentController extends Controller
 
     public function update(CreateDepartmentRequest $request,  Department $department): RedirectResponse
     {
-       //    Autorizar para crear basado en los roles, en postPolicy
+       //    Autorizar para crear basado en los roles, en departmentPolicy
        $this->authorize('update',$department);   
         $department->update($request->validated());
 
@@ -76,7 +83,7 @@ class DepartmentController extends Controller
    
     public function destroy(Department $department)
     {
-          //    Autorizar para crear basado en los roles, en postPolicy
+          //    Autorizar para crear basado en los roles, en department$departmentPolicy
        $this->authorize('delete',$department);   
        
          $department->delete();

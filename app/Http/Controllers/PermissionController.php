@@ -15,14 +15,25 @@ class PermissionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() : Response
+    public function index(Request $request) : Response
     {
-        return Inertia :: render('Admin/Permissions/PermissionIndex',[
-            
-            'permissions' => PermissionResource::collection(Permission::all())
-        ]);
+         // Paginacion mostrar predeterminado 5
+         $perPage = $request->input('perPage') ?:5;
+         // funcion del buscador search
+         $permissions = Permission::query()
+         ->when($request->input('search'), function( $query, $search){
+             $query ->where('name','like', "%{$search}%");
+         })
+         ->paginate($perPage) // Paginacion mostrar mas registros
+         ->withQueryString()
+         ->through(function ($permission) {
+             return new PermissionResource($permission);
+         });
+       
+        //  estoy utilizando array_merge para combinar el array que se obtiene de compact('permissions') con el array 'filters' => $request->only, el prop mantiene la busqueda al cambiar depagina,
+        //propiedad from de la paginacion de laravel, representa el numero del primer elemento de lla pagina actual
+        return Inertia::render('Admin/Permissions/PermissionIndex', array_merge(compact('permissions'), ['from' => $permissions->firstItem(), 'filters' => $request->only(['search', 'perPage'])]));
     }
-// sfdgdsgdsgsdgsdgs
     /**
      * Show the form for creating a new resource.
      */

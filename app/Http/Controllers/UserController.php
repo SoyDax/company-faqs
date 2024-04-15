@@ -23,12 +23,25 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        return Inertia :: render('Admin/Users/UserIndex',[
-            'users' => UserResource::collection(User::all())
-        
-        ]);
+            // Paginacion mostrar predeterminado 5
+            $perPage = $request->input('perPage') ?:5;
+            // funcion del buscador search
+            $users = User::query()
+            ->when($request->input('search'), function( $query, $search){
+                $query ->where('name','like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+            })
+            ->paginate($perPage) // Paginacion mostrar mas registros
+            ->withQueryString()
+            ->through(function ($user) {
+                return new UserResource($user);
+            });
+       
+    //  estoy utilizando array_merge para combinar el array que se obtiene de compact('users') con el array 'filters' => $request->only, el prop mantiene la busqueda al cambiar depagina,
+    //propiedad from de la paginacion de laravel, representa el numero del primer elemento de lla pagina actual
+    return Inertia::render('Admin/Users/UserIndex', array_merge(compact('users'), ['from' => $users->firstItem(), 'filters' => $request->only(['search', 'perPage'])]));
     }
 
     /**
