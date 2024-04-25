@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\RemoveRoleFromUserController;
 use App\Http\Controllers\RevokePermissionFromRoleController;
 use App\Http\Controllers\RevokePermissionFromUserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use Illuminate\Foundation\Application;
@@ -64,5 +66,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('/admin')->group(function () {
 // el admin puede acceder a la ruta pero no solo el admin sino también el moderador y el escritor.
     Route::resource('/posts', PostController::class) ->middleware(['role:admin|moderador|escritor|user']);
     Route::resource('/departments', DepartmentController::class)->middleware(['role:admin|moderador|escritor']);
+    Route::resource('/categories', CategoryController::class)->middleware(['role:admin|moderador|escritor']);
+    Route::resource('/subcategories', SubCategoryController::class)->middleware(['role:admin|moderador|escritor']);
+
 
 require __DIR__.'/auth.php';

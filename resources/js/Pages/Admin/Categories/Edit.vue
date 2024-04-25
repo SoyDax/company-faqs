@@ -9,25 +9,25 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 
 const props = defineProps({
-    department: {
+    category: {
         type: Object,
         required: true,
     },
 });
 
 const form = useForm({
-    name: props.department.name,
+    name: props.category.name,
 });
 </script>
 
 <template>
 
-    <Head title="Actualizar departamento" />
+    <Head title="Actualizar categoria" />
 
     <AdminLayout>
         <div class="max-w-7xl mx-auto py-4">
             <div class="flex justify-between">
-                <Link :href="route('departments.index')"
+                <Link :href="route('categories.index')"
                     class="px-3 py-2 text-white font-semibold bg-gray-500 hover:bg-gray-600 rounded">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-5 h-5 inline-block align-text-top mr-1">
@@ -39,10 +39,10 @@ const form = useForm({
 
             <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
                 <h1 class="text-2xl font-semibold text-indigo-700">
-                    Actualizar departamento
+                    Actualizar categoria
                 </h1>
                 <form @submit.prevent="
-                    form.put(route('departments.update', department.id))
+                    form.put(route('categories.update', category.id))
                     ">
                     <div class="mt-4">
                         <InputLabel for="name" value="Nombre" />

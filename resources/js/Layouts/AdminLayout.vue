@@ -34,12 +34,13 @@ const { hasRole, hasRoles } = usePermission();
                 </div>
 
                 <ul class="space-y-2 tracking-wide mt-8">
+                    <span class="text-2xl text-gray-200 font-bold text-center uppercase">General</span>
                     <li>
-                        <SidebarLink href="/dashboard" :active="false">
+                        <SidebarLink href="/dashboard" :active="route().current('dashboard')">
                             <svg class="-ml-1 h-6 w-6" viewBox="0 0 24 24" fill="none">
                                 <path
                                     d="M6 8a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8ZM6 15a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1Z"
-                                    class="fill-current text-cyan-400 dark:fill-slate-600"></path>
+                                    class="fill-current text-cyan-400 dark:fill-slate-500"></path>
                                 <path d="M13 8a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2V8Z"
                                     class="fill-current text-cyan-200 group-hover:text-cyan-300"></path>
                                 <path d="M13 15a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-1Z"
@@ -59,9 +60,34 @@ const { hasRole, hasRoles } = usePermission();
                             <span class="group-hover:text-gray-200 -mr-1 font-medium">FAQS</span>
                         </SidebarLink>
                     </li>
+                    <li>
+                        <SidebarLink :href="route('categories.index')" :active="route().current('categories.index')">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                            </svg>
+
+                            <span class="group-hover:text-gray-200 -mr-1 font-medium">Categorias</span>
+                        </SidebarLink>
+                    </li>
+                    <li>
+                        <SidebarLink :href="route('subcategories.index')" :active="route().current('subcategories.index')">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                            </svg>
+
+                            <span class="group-hover:text-gray-200 -mr-1 font-medium">SubCategorias</span>
+                        </SidebarLink>
+                    </li>
 
                     <template v-if="hasRoles(['admin', 'moderador', 'escritor'])">
                         <li>
+                            <span class="text-2xl text-gray-200 font-bold text-center uppercase">Servicios</span>
                             <SidebarLink :href="route('departments.index')"
                                 :active="route().current('departments.index')">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -201,7 +227,7 @@ const { hasRole, hasRoles } = usePermission();
                 <div :class="{
                     block: showingNavigationDropdown,
                     hidden: !showingNavigationDropdown,
-                    }" class="lg:hidden bg-white">
+                }" class="lg:hidden bg-white">
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
@@ -225,6 +251,28 @@ const { hasRole, hasRoles } = usePermission();
                                 </svg>
 
                                 <span class="group-hover:text-gray-200 -mr-1 font-medium">Departamentos</span>
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('categories.index')"
+                                :active="route().current('categories.index')" class="flex space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                                </svg>
+
+                                <span class="group-hover:text-gray-200 -mr-1 font-medium">Categorias</span>
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('subcategories.index')"
+                                :active="route().current('subcategories.index')" class="flex space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                                </svg>
+
+                                <span class="group-hover:text-gray-200 -mr-1 font-medium">SubCategorias</span>
                             </ResponsiveNavLink>
                         </template>
                         <template v-if="hasRole('admin')">
