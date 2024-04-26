@@ -1,14 +1,37 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import Checkbox from "@/Components/Checkbox.vue";
-import { Head, Link, useForm } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
+import { Head, Link, useForm } from "@inertiajs/vue3";
+import { onMounted, watch, ref } from "vue";
+import VueMultiselect from "vue-multiselect";
+
+defineProps({
+    categories: Array,
+    subcategories: Array,
+});
 
 const form = useForm({
     title: "",
+    description: "",
+    category_id: "",
+    sub_category_id: "",
+});
+
+const selectedCategory = ref(null); // Crea una referencia para la categoria seleccionado
+watch(selectedCategory, (newVal) => {
+    if (newVal) {
+        form.category_id = newVal.id; // Actualiza la categoria_id en el formulario cuando se selecciona un nuevo categoria
+    }
+});
+
+const selectedSubCategory = ref(null); // Crea una referencia para la subcategoria seleccionado
+watch(selectedSubCategory, (newVal) => {
+    if (newVal) {
+        form.sub_category_id = newVal.id; // Actualiza la subcategoria_id en el formulario cuando se selecciona un nuevo subcategoria
+    }
 });
 </script>
 
@@ -35,13 +58,38 @@ const form = useForm({
                 </h1>
                 <form @submit.prevent="form.post(route('posts.store'))">
                     <div class="mt-4">
-                        <InputLabel for="title" value="Titulo" />
+                        <InputLabel for="title" value="Titulo:" />
 
                         <TextInput id="title" type="text" class="mt-1 block w-full" v-model="form.title" autofocus
                             autocomplete="title" />
 
                         <InputError class="mt-2" :message="form.errors.title" />
                     </div>
+
+                    <div class="mt-4">
+                        <InputLabel for="categories" value="Categoria:" />
+                        <VueMultiselect v-model="selectedCategory" :options="categories" :multiple="false"
+                            :close-on-select="true" placeholder="Presiona para ver categorias" label="name"
+                            track-by="id" />
+                    </div>
+
+                    <div class="mt-4">
+                        <InputLabel for="subcategories" value="SubCategoria:" />
+                        <VueMultiselect v-model="selectedSubCategory" :options="subcategories" :multiple="false"
+                            :close-on-select="true" placeholder="Presiona para ver SubCategorias" label="name"
+                            track-by="id" />
+                    </div>
+
+                    <div class="mt-4">
+                        <InputLabel for="description" value="Descripcion:" />
+
+                        <TextInput id="description" type="text" class="mt-1 block w-full" v-model="form.description" autofocus
+                            autocomplete="description" />
+
+                        <InputError class="mt-2" :message="form.errors.description" />
+                    </div>
+
+
 
                     <div class="flex items-center mt-4">
                         <PrimaryButton class="ms-0" :class="{ 'opacity-25': form.processing }"
@@ -54,3 +102,4 @@ const form = useForm({
         </div>
     </AdminLayout>
 </template>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>

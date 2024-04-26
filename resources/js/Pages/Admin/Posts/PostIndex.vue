@@ -136,6 +136,9 @@ const confirmDeletePost = (id) => {
                         <TableRow>
                             <TableHeaderCell>#</TableHeaderCell>
                             <TableHeaderCell>Titulo</TableHeaderCell>
+                            <TableHeaderCell>Categoria</TableHeaderCell>
+                            <TableHeaderCell>SubCategoria</TableHeaderCell>
+                            <TableHeaderCell>Descripcion</TableHeaderCell>
                             <TableHeaderCell>Accion</TableHeaderCell>
                         </TableRow>
                     </template>
@@ -143,10 +146,14 @@ const confirmDeletePost = (id) => {
                         <TableRow v-for="(post, i) in posts.data" :key="post.id" class="border-b">
                             <TableDataCell>{{ from + i }}</TableDataCell>
                             <TableDataCell>{{ post.title }}</TableDataCell>
+                            <TableDataCell>{{ post.category }}</TableDataCell>
+                            <TableDataCell>{{ post.subcategory }}</TableDataCell>
+                            <!-- FUncion slice para limitar la cantidad de caracteres a mostrar, funciona añade ... si el texto es mayor a 50 caracteres -->
+                            <TableDataCell>{{ post.description.slice(0, 40) + (post.description.length > 50 ? '...' : '') }}</TableDataCell>
                             <TableDataCell class="space-x-4">
                                 <!-- <template v-if="hasPermission('Editar FAQ')">  -->
                                 <Link :href="route('posts.edit', post.id)" as="button"
-                                    class="px-3 py-2 text-white font-semibold bg-blue-500 hover:bg-blue-600 rounded">
+                                    class="px-2 py-2 text-white font-semibold bg-blue-500 hover:bg-blue-600 rounded">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round"

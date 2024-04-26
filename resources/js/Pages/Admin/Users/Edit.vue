@@ -98,7 +98,7 @@ watch(
                     <div class="mt-4">
                         <InputLabel for="departments" value="Departamentos" />
                         <VueMultiselect v-model="selectedDepartment" :options="departments" :multiple="false"
-                            :close-on-select="true" placeholder="Presiona para ver departamento" label="name"
+                            :close-on-select="true" :placeholder="user.department" label="name"
                             track-by="id" />
                     </div>
 

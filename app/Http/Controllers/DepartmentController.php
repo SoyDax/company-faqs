@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateDepartmentRequest;
 use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -81,13 +82,35 @@ class DepartmentController extends Controller
         return to_route(route: 'departments.index');
     }
    
+    
+    
+    
+    
+    
     public function destroy(Department $department)
     {
-          //    Autorizar para crear basado en los roles, en department$departmentPolicy
-       $this->authorize('delete',$department);   
-       
-         $department->delete();
+        // Autorizar para eliminar basado en los roles, en departmentPolicy
+        $this->authorize('delete', $department);   
 
-         return back();
+        try {
+            // Buscar a los usuarios que están asignados a este departamento
+            $users = User::where('department_id', $department->id)->get();
+
+            // Si hay usuarios asignados a este departamento, lanzar una excepción
+            if ($users->count() > 0) {
+                throw new \Exception('No se puede eliminar este departamento porque tiene ' . $users->count() . ' usuarios asignados. Por favor, elimine o cambie los usuarios asignados a este departamento y vuelva a intentarlo.');
+            }
+
+            // Eliminar el departamento
+            $department->delete();
+
+            return to_route(route: 'departments.index');
+        } catch (\Exception $e) {
+            // Devolver una respuesta JSON con el mensaje de error
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
     }
+
+    
+    
 }

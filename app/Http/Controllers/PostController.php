@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePostRequest;
+use App\Http\Resources\CategoryResource;
 use App\Http\Resources\PostResource;
+use App\Http\Resources\SubCategoryResource;
+use App\Models\Category;
 use App\Models\Post;
+use App\Models\SubCategory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -34,7 +38,12 @@ class PostController extends Controller
     {
           //    Autorizar para crear basado en los roles, en postPolicy
         $this->authorize('create', Post::class);
-        return Inertia::render('Admin/Posts/Create');
+        return Inertia::render('Admin/Posts/Create',[
+            'categories' => CategoryResource::collection(Category::all()),
+            'subcategories' => SubCategoryResource::collection(SubCategory::all())
+        ]);
+        
+        
     }
 
     public function store(CreatePostRequest $request): RedirectResponse
@@ -49,8 +58,13 @@ class PostController extends Controller
     public function edit(Post $post): Response
     {
         $this->authorize('update', $post);
+        // $post->load(['category', 'subCategory']);
       return Inertia::render('Admin/Posts/Edit', [
-          'post' => new PostResource($post)
+          'post' => new PostResource($post),
+            'categories' => CategoryResource::collection(Category::all()),
+            'subcategories' => SubCategoryResource::collection(SubCategory::all())
+          
+          
       ]);
     }
 
@@ -59,7 +73,7 @@ class PostController extends Controller
         $this->authorize('update', $post);
         $post->update($request->validated());
 
-        return to_route('posts.index');
+        return back();
     }
 
     public function destroy(Post $post): RedirectResponse

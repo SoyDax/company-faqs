@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('category_id')
+                ->constrained('categories') 
+                ->onUpdate('cascade')->onDelete('restrict');
+            $table->foreignId('sub_category_id')
+                ->constrained('sub_categories') 
+                ->onUpdate('cascade')->onDelete('restrict');
             $table->string('title');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

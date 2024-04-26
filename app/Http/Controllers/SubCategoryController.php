@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateSubCategoryRequest;
 use App\Http\Resources\SubCategoryResource;
+use App\Models\Post;
 use App\Models\SubCategory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -39,6 +40,8 @@ class SubCategoryController extends Controller
 
     public function create(): Response
     {
+        //    Autorizar para crear basado en los roles, en SubCategoryPolicy
+        $this->authorize('create', SubCategory::class);
         return Inertia::render('Admin/Subcategories/Create');
     }
 
@@ -58,6 +61,8 @@ class SubCategoryController extends Controller
 
     public function edit(SubCategory $subcategory): Response
     {
+        //    Autorizar para editar basado en los roles, en SubCategoryPolicy
+        $this->authorize('update', $subcategory);
         return Inertia::render(component: 'Admin/Subcategories/Edit', props: [
             'subcategory' => new SubCategoryResource($subcategory)
         ]);
@@ -66,6 +71,8 @@ class SubCategoryController extends Controller
   
     public function update(CreateSubCategoryRequest $request, SubCategory $subcategory): RedirectResponse
     {
+        //    Autorizar para editar basado en los roles, en SubCategoryPolicy
+        $this->authorize('update', $subcategory);
         $subcategory->update($request->validated());
         return to_route(route: 'subcategories.index');
     }
@@ -73,7 +80,24 @@ class SubCategoryController extends Controller
    
     public function destroy(SubCategory $subcategory)
     {
-        $subcategory->delete();
-        return back();
+        //    Autorizar para eliminar basado en los roles, en SubCategoryPolicy
+        $this->authorize('delete', $subcategory);
+        try {
+            // Buscar a los usuarios que están asignados a este departamento
+            $posts = Post::where('sub_category_id', $subcategory->id)->get();
+
+            // Si hay usuarios asignados a este departamento, lanzar una excepción
+            if ($posts->count() > 0) {
+                throw new \Exception('No se puede eliminar esta subcategoria porque tiene ' . $posts->count() . ' FAQS asignados. Por favor, elimine o cambie las subcategorias asignados a este FAQ y vuelva a intentarlo.');
+            }
+
+            // Eliminar el departamento
+            $subcategory->delete();
+
+            return back();
+        } catch (\Exception $e) {
+            // Devolver una respuesta JSON con el mensaje de error
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
     }
 }

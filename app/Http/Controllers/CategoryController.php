@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -12,9 +13,7 @@ use Inertia\Response;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Request $request): Response
     {
         // Paginacion mostrar predeterminado 5
@@ -42,6 +41,8 @@ class CategoryController extends Controller
      */
     public function create(): Response
     {
+        //    Autorizar para crear basado en los roles, en categoryPolicy
+        $this->authorize('create', Category::class);
         return Inertia :: render(component:'Admin/Categories/Create');
     }
 
@@ -50,6 +51,8 @@ class CategoryController extends Controller
      */
     public function store(CreateCategoryRequest $request): RedirectResponse
     {
+        //    Autorizar para crear basado en los roles, en categoryPolicy
+        $this->authorize('create', Category::class);
         Category::create($request->validated());
         return to_route(route: 'categories.index');
     }
@@ -62,7 +65,9 @@ class CategoryController extends Controller
 
  
     public function edit(Category $category): Response
-    {
+    {   
+        //    Autorizar para crear basado en los roles, en categoryPolicy
+        $this->authorize('update', $category);
         return Inertia::render(component:'Admin/Categories/Edit', props:[
             'category' => new CategoryResource($category)
         ]);
@@ -73,6 +78,8 @@ class CategoryController extends Controller
      */
     public function update(CreateCategoryRequest $request, Category $category): RedirectResponse
     {
+        //    Autorizar para crear basado en los roles, en categoryPolicy
+        $this->authorize('update', $category);
         $category->update($request->validated());
         return to_route(route: 'categories.index');
     }
@@ -82,8 +89,25 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $category->delete();
+        //    Autorizar para crear basado en los roles, en categoryPolicy
+        $this->authorize('delete', $category);
+        try {
+            // Buscar a los usuarios que están asignados a este departamento
+            $posts = Post::where('category_id', $category->id)->get();
 
-        return back();
+            // Si hay usuarios asignados a este departamento, lanzar una excepción
+            if ($posts->count() > 0) {
+                throw new \Exception('No se puede eliminar esta categoria porque tiene ' . $posts->count() . ' FAQS asignados. Por favor, elimine o cambie las categorias asignados a este FAQ y vuelva a intentarlo.');
+            }
+
+            // Eliminar el departamento
+            $category->delete();
+
+            return back();
+        } catch (\Exception $e) {
+            // Devolver una respuesta JSON con el mensaje de error
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
     }
+
 }

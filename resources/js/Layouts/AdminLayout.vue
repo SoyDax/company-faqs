@@ -60,7 +60,10 @@ const { hasRole, hasRoles } = usePermission();
                             <span class="group-hover:text-gray-200 -mr-1 font-medium">FAQS</span>
                         </SidebarLink>
                     </li>
-                    <li>
+                    
+
+                    <template v-if="hasRoles(['admin', 'moderador', 'escritor'])">
+                        <li>
                         <SidebarLink :href="route('categories.index')" :active="route().current('categories.index')">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-6 h-6">
@@ -84,8 +87,6 @@ const { hasRole, hasRoles } = usePermission();
                             <span class="group-hover:text-gray-200 -mr-1 font-medium">SubCategorias</span>
                         </SidebarLink>
                     </li>
-
-                    <template v-if="hasRoles(['admin', 'moderador', 'escritor'])">
                         <li>
                             <span class="text-2xl text-gray-200 font-bold text-center uppercase">Servicios</span>
                             <SidebarLink :href="route('departments.index')"

@@ -1,18 +1,24 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import { Head, Link, useForm } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
-import Table from "@/Components/Table.vue";
-import TableRow from "@/Components/TableRow.vue";
-import TableHeaderCell from "@/Components/TableHeaderCell.vue";
-import TableDataCell from "@/Components/TableDataCell.vue";
-import { onMounted, watch } from "vue";
+import { Head, Link, useForm } from "@inertiajs/vue3";
+import VueMultiselect from "vue-multiselect";
+
+import { onMounted, watch, ref } from "vue";
 
 const props = defineProps({
     post: {
+        type: Object,
+        required: true,
+    },
+    categories: {
+        type: Object,
+        required: true,
+    },
+    subcategories: {
         type: Object,
         required: true,
     },
@@ -20,7 +26,39 @@ const props = defineProps({
 
 const form = useForm({
     title: props.post?.title,
+    category_id: props.post?.category_id,
+    sub_category_id: props.post?.sub_category_id,
+    description: props.post?.description,
 });
+
+const selectedCategory = ref(null); // Crea una referencia para la categoria seleccionado
+watch(selectedCategory, (newVal) => {
+    if (newVal) {
+        form.category_id = newVal.id; // Actualiza la categoria_id en el formulario cuando se selecciona un nuevo categoria
+    }
+});
+
+const selectedSubCategory = ref(null); // Crea una referencia para la subcategoria seleccionado
+watch(selectedSubCategory, (newVal) => {
+    if (newVal) {
+        form.sub_category_id = newVal.id; // Actualiza la subcategoria_id en el formulario cuando se selecciona un nuevo subcategoria
+    }
+});
+
+const submit = () => {
+    form.put(route("posts.update", props.post?.id));
+};
+onMounted(() => {
+    selectedCategory.value = props.post?.category_id;
+    selectedSubCategory.value = props.post?.sub_category_id;
+});
+watch(
+    () => props.post,
+    () => {
+        selectedCategory.value = props.post?.category_id;
+        selectedSubCategory.value = props.post?.sub_category_id;
+    }
+);
 </script>
 
 <template>
@@ -42,9 +80,9 @@ const form = useForm({
 
             <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
                 <h1 class="text-2xl font-semibold text-indigo-700">
-                    Actualizar Faqs
+                    ACTUALIZAR FAQ
                 </h1>
-                <form @submit.prevent="form.put(route('posts.update', post.id))">
+                <form @submit.prevent="submit">
                     <div class="mt-4">
                         <InputLabel for="title" value="Publicacion" />
 
@@ -52,6 +90,27 @@ const form = useForm({
                             autocomplete="title" />
 
                         <InputError class="mt-2" :message="form.errors.title" />
+                    </div>
+                    <div class="mt-4">
+                        <InputLabel for="categories" value="Categoria:" />
+                        <VueMultiselect v-model="selectedCategory" :options="categories" :multiple="false"
+                            :close-on-select="true" :placeholder="post.category" label="name" track-by="id" />
+                    </div>
+
+                    <div class="mt-4">
+                        <InputLabel for="subcategories" value="SubCategoria:" />
+                        <VueMultiselect v-model="selectedSubCategory" :options="subcategories" :multiple="false"
+                            :close-on-select="true" :placeholder="post.subcategory" label="name"
+                            track-by="id" />
+                    </div>
+
+                    <div class="mt-4">
+                        <InputLabel for="description" value="Descripcion:" />
+
+                        <TextInput id="description" type="text" class="mt-1 block w-full" v-model="form.description"
+                            autofocus autocomplete="description" />
+
+                        <InputError class="mt-2" :message="form.errors.description" />
                     </div>
 
                     <div class="flex items-center mt-4">
@@ -65,3 +124,4 @@ const form = useForm({
         </div>
     </AdminLayout>
 </template>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>

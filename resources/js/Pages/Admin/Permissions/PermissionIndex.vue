@@ -20,7 +20,7 @@ const props = defineProps({
 });
 // Buscador de registros, filters mantiene busqueda al cambiar pagina
 const search = ref(props.filters.search);
-const perPage = ref(5);
+const perPage = ref(6);
 
 // instancia router
 watch(search, (value) => {
@@ -111,7 +111,7 @@ const confirmDeletePermission = (id) => {
               <div class="flex">
                 <select v-model="perPage" @change="getPermissions"
                   class="px-4 pr-8 py-3 w-full rounded-md bg-gray-200 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-gray-500 focus:border-gray-200">
-                  <option value="5">Mostrar 5</option>
+                  <option value="6">Mostrar 6</option>
                   <option value="10">Mostrar 10</option>
                   <option value="15">Mostrar 15</option>
                 </select>

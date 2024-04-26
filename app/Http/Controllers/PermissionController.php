@@ -18,7 +18,7 @@ class PermissionController extends Controller
     public function index(Request $request) : Response
     {
          // Paginacion mostrar predeterminado 5
-         $perPage = $request->input('perPage') ?:5;
+         $perPage = $request->input('perPage') ?:6;
          // funcion del buscador search
          $permissions = Permission::query()
          ->when($request->input('search'), function( $query, $search){
