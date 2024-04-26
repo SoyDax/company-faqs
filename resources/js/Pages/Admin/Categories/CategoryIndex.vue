@@ -61,7 +61,7 @@ const confirmDeleteCategory = (id) => {
         onSuccess: () => {
           if (props.messageError) {
             Swal.fire("Error", props.messageError, "error").then(() => {
-              window.location.href = '/categories';
+              window.history.back();
             });
           } else {
             Swal.fire("Eliminado correctamente", "", "success");

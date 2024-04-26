@@ -61,7 +61,7 @@ const confirmDeleteSubcategories = (id) => {
         onSuccess: () => {
           if (props.messageError) {
             Swal.fire("Error", props.messageError, "error").then(() => {
-              window.location.href = '/subcategories';
+              window.history.back();
             });
           } else {
             Swal.fire("Eliminado correctamente", "", "success");
