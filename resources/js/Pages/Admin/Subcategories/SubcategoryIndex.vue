@@ -16,6 +16,7 @@ const props = defineProps({
   subcategories: Object,
   filters: Object,
   from: Number, //propiedad from de la paginacion de laravel, representa el numero del primer elemento de lla pagina actual
+  messageError: String, // Mensaje de error al eliminar un registro que tiene relacion con faqs
 });
 // Buscador de registros, filters mantiene busqueda al cambiar pagina
 const search = ref(props.filters.search);
@@ -58,14 +59,13 @@ const confirmDeleteSubcategories = (id) => {
     if (result.isConfirmed) {
       form.delete(route("subcategories.destroy", id), {
         onSuccess: () => {
-          Swal.fire("Eliminado correctamente", "", "success");
-        },
-        onError: () => {
-          Swal.fire(
-            "Error",
-            "Sucedio un error al eliminar la SubCategoria",
-            "error"
-          );
+          if (props.messageError) {
+            Swal.fire("Error", props.messageError, "error").then(() => {
+              window.location.href = '/subcategories';
+            });
+          } else {
+            Swal.fire("Eliminado correctamente", "", "success");
+          }
         },
       });
     }

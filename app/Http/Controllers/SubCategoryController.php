@@ -82,22 +82,19 @@ class SubCategoryController extends Controller
     {
         //    Autorizar para eliminar basado en los roles, en SubCategoryPolicy
         $this->authorize('delete', $subcategory);
-        try {
+       
             // Buscar a los usuarios que están asignados a este departamento
             $posts = Post::where('sub_category_id', $subcategory->id)->get();
 
-            // Si hay usuarios asignados a este departamento, lanzar una excepción
-            if ($posts->count() > 0) {
-                throw new \Exception('No se puede eliminar esta subcategoria porque tiene ' . $posts->count() . ' FAQS asignados. Por favor, elimine o cambie las subcategorias asignados a este FAQ y vuelva a intentarlo.');
-            }
-
-            // Eliminar el departamento
+            // Si hay posts asignados a esta categoria, guardar el mensaje en una variable y no eliminar la categoria
+        if ($posts->count() > 0) {
+            $messageError = 'No se puede eliminar esta Subcategoria porque tiene ' . $posts->count() . ' FAQS con esta Subcategoria.';
+             // Retornar a la vista con el mensaje
+        return Inertia::render('Admin/Subcategories/SubcategoryIndex', ['messageError' => $messageError]);
+        } else {
+            // Eliminar la categoria
             $subcategory->delete();
-
-            return back();
-        } catch (\Exception $e) {
-            // Devolver una respuesta JSON con el mensaje de error
-            return response()->json(['message' => $e->getMessage()], 400);
         }
+        return back();
     }
 }

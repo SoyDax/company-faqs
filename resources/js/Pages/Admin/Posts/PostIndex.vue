@@ -98,6 +98,7 @@ const confirmDeletePost = (id) => {
                 </Link>
                 <!-- </template> -->
                 <h1>Posts Index Page</h1>
+                
             </div>
 
             <div class="mt-6">

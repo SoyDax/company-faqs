@@ -87,27 +87,24 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    
     public function destroy(Category $category)
     {
-        //    Autorizar para crear basado en los roles, en categoryPolicy
+        // Autorizar para crear basado en los roles, en categoryPolicy
         $this->authorize('delete', $category);
-        try {
-            // Buscar a los usuarios que están asignados a este departamento
-            $posts = Post::where('category_id', $category->id)->get();
 
-            // Si hay usuarios asignados a este departamento, lanzar una excepción
-            if ($posts->count() > 0) {
-                throw new \Exception('No se puede eliminar esta categoria porque tiene ' . $posts->count() . ' FAQS asignados. Por favor, elimine o cambie las categorias asignados a este FAQ y vuelva a intentarlo.');
-            }
-
-            // Eliminar el departamento
+        // Buscar a los posts que están asignados a esta categoria
+        $posts = Post::where('category_id', $category->id)->get();
+        // Si hay posts asignados a esta categoria, guardar el mensaje en una variable y no eliminar la categoria
+        if ($posts->count() > 0) {
+            $messageError = 'No se puede eliminar esta categoria porque tiene ' . $posts->count() . ' FAQS con esta categoria.';
+             // Retornar a la vista con el mensaje
+        return Inertia::render('Admin/Categories/CategoryIndex', ['messageError' => $messageError]);
+        } else {
+            // Eliminar la categoria
             $category->delete();
-
-            return back();
-        } catch (\Exception $e) {
-            // Devolver una respuesta JSON con el mensaje de error
-            return response()->json(['message' => $e->getMessage()], 400);
         }
+        return back();
     }
 
 }

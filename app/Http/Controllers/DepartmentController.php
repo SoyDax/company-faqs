@@ -92,24 +92,21 @@ class DepartmentController extends Controller
         // Autorizar para eliminar basado en los roles, en departmentPolicy
         $this->authorize('delete', $department);   
 
-        try {
+        
             // Buscar a los usuarios que están asignados a este departamento
             $users = User::where('department_id', $department->id)->get();
 
             // Si hay usuarios asignados a este departamento, lanzar una excepción
             if ($users->count() > 0) {
-                throw new \Exception('No se puede eliminar este departamento porque tiene ' . $users->count() . ' usuarios asignados. Por favor, elimine o cambie los usuarios asignados a este departamento y vuelva a intentarlo.');
-            }
-
-            // Eliminar el departamento
-            $department->delete();
-
-            return to_route(route: 'departments.index');
-        } catch (\Exception $e) {
-            // Devolver una respuesta JSON con el mensaje de error
-            return response()->json(['message' => $e->getMessage()], 400);
-        }
-    }
+                $messageError = 'No se puede eliminar este departamento porque tiene ' . $users->count() . ' usuarios con este departamento.';
+                // Retornar a la vista con el mensaje
+           return Inertia::render('Admin/Departments/DepartmentIndex', ['messageError' => $messageError]);
+           } else {
+               // Eliminar la categoria
+               $department->delete();
+           }
+           return back();
+       }
 
     
     
