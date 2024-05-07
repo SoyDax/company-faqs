@@ -21,6 +21,10 @@ class PostResource extends JsonResource
             'category' => $this->category->name,
             'subcategory' => $this->subcategory->name,
             'department' => $this->department->name,
+            'created_at' => $this->created_at->locale('es')->diffForHumans(),
+            'updated_at' => $this->updated_at->locale('es')->diffForHumans(),
+            
+            
         ];
     }
 }

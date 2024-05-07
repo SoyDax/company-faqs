@@ -133,9 +133,9 @@ const confirmDeleteRol = (id) => {
                         <TableRow v-for="(role, i) in roles.data" :key="role.id" class="border-b">
                             <TableDataCell>{{ from + i }}</TableDataCell>
                             <TableDataCell>{{ role.name }}</TableDataCell>
-                            <TableDataCell class="space-x-4">
+                            <TableDataCell class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                                 <Link :href="route('roles.edit', role.id)" as="button"
-                                    class="px-3 py-2 text-white font-semibold bg-blue-500 hover:bg-blue-600 rounded">
+                                    class="px-2 py-2 text-white font-semibold bg-blue-500 hover:bg-blue-600 rounded">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round"

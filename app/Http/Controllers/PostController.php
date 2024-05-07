@@ -21,7 +21,6 @@ class PostController extends Controller
 
 
 
-    
     public function index(Request $request): Response
     {
         // obtienee department_id del usuario autenticado
@@ -86,6 +85,17 @@ class PostController extends Controller
         return to_route('posts.index');
     }
 
+    public function show(Post $post): Response
+    {
+        return Inertia::render('Admin/Posts/Show', [
+            'post' => new PostResource($post),
+            'categories' => CategoryResource::collection(Category::all()),
+            'subcategories' => SubCategoryResource::collection(SubCategory::all()),
+            'departments' => DepartmentResource::collection(Department::all())
+        ]);
+    }
+
+
     public function edit(Post $post): Response
     {
         $this->authorize('update', $post);
@@ -95,7 +105,6 @@ class PostController extends Controller
             'categories' => CategoryResource::collection(Category::all()),
             'subcategories' => SubCategoryResource::collection(SubCategory::all()),
             'departments' => DepartmentResource::collection(Department::all())
-          
           
       ]);
     }
