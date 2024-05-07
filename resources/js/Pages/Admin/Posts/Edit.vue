@@ -5,6 +5,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
+import { usePermission } from "@/composables/permissions";
 import VueMultiselect from "vue-multiselect";
 
 import { onMounted, watch, ref } from "vue";
@@ -22,12 +23,17 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    departments: {
+        type: Object,
+        required: true,
+    },
 });
-
+const { hasPermissions } = usePermission();
 const form = useForm({
     title: props.post?.title,
     category_id: props.post?.category_id,
     sub_category_id: props.post?.sub_category_id,
+    department_id: props.post?.department_id,
     description: props.post?.description,
 });
 
@@ -45,18 +51,27 @@ watch(selectedSubCategory, (newVal) => {
     }
 });
 
+const selectedDepartment = ref(null); // Crea una referencia para la subcategoria seleccionado
+watch(selectedDepartment, (newVal) => {
+    if (newVal) {
+        form.department_id = newVal.id; // Actualiza la subcategoria_id en el formulario cuando se selecciona un nuevo subcategoria
+    }
+});
+
 const submit = () => {
     form.put(route("posts.update", props.post?.id));
 };
 onMounted(() => {
     selectedCategory.value = props.post?.category_id;
     selectedSubCategory.value = props.post?.sub_category_id;
+    selectedDepartment.value = props.post?.department_id;
 });
 watch(
     () => props.post,
     () => {
         selectedCategory.value = props.post?.category_id;
         selectedSubCategory.value = props.post?.sub_category_id;
+        selectedDepartment.value = props.post?.department_id;
     }
 );
 </script>
@@ -103,6 +118,15 @@ watch(
                             :close-on-select="true" :placeholder="post.subcategory" label="name"
                             track-by="id" />
                     </div>
+
+                    <template v-if="hasPermissions(['Editar departamento'])">
+                    <div class="mt-4">
+                        <InputLabel for="departments" value="Departamento:" />
+                        <VueMultiselect v-model="selectedDepartment" :options="departments" :multiple="false"
+                            :close-on-select="true" :placeholder="post.department" label="name"
+                            track-by="id" />
+                    </div>
+                    </template>
 
                     <div class="mt-4">
                         <InputLabel for="description" value="Descripcion:" />

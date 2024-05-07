@@ -10,7 +10,7 @@ import SidebarLink from "@/Components/SidebarLink.vue";
 import { usePermission } from "@/composables/permissions";
 
 const showingNavigationDropdown = ref(false);
-const { hasRole, hasRoles } = usePermission();
+const { hasRole, hasRoles, hasPermissions } = usePermission();
 </script>
 
 <template>

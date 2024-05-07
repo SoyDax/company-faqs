@@ -23,7 +23,8 @@ class CreatePostRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'category_id' => ['sometimes', 'integer'],
-            'sub_category_id' => ['sometimes', 'integer']
+            'sub_category_id' => ['sometimes', 'integer'],
+            'department_id' => ['sometimes', 'integer']
         ];
     }
 }

@@ -21,6 +21,7 @@ class PostFactory extends Factory
         'description' => $this->faker->paragraph(),
         'category_id' => 1,
         'sub_category_id' => 1,
+        'department_id' => 1,
         ];
     }
 }

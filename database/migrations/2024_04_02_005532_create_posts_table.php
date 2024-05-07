@@ -19,6 +19,9 @@ return new class extends Migration
             $table->foreignId('sub_category_id')
                 ->constrained('sub_categories') 
                 ->onUpdate('cascade')->onDelete('restrict');
+            $table->foreignId('department_id')
+                ->constrained('departments') 
+                ->onUpdate('cascade')->onDelete('restrict');
             $table->string('title');
             $table->text('description')->nullable();
             $table->timestamps();

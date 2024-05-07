@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateDepartmentRequest;
 use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -92,22 +93,34 @@ class DepartmentController extends Controller
         // Autorizar para eliminar basado en los roles, en departmentPolicy
         $this->authorize('delete', $department);   
 
-        
-            // Buscar a los usuarios que están asignados a este departamento
-            $users = User::where('department_id', $department->id)->get();
+        // Buscar a los usuarios que están asignados a este departamento
+        $users = User::where('department_id', $department->id)->get();
 
-            // Si hay usuarios asignados a este departamento, lanzar una excepción
-            if ($users->count() > 0) {
-                $messageError = 'No se puede eliminar este departamento porque tiene ' . $users->count() . ' usuarios con este departamento.';
-                // Retornar a la vista con el mensaje
-           return Inertia::render('Admin/Departments/DepartmentIndex', ['messageError' => $messageError]);
-           } else {
-               // Eliminar la categoria
-               $department->delete();
-           }
-           return back();
-       }
+        // Buscar a los posts que están asignados a este departamento
+        $posts = Post::where('department_id', $department->id)->get();
 
+        $messageError = '';
+
+        // Si hay usuarios asignados a este departamento, agregar al mensaje
+        if ($users->count() > 0) {
+            $messageError .= 'No se puede eliminar este departamento porque tiene ' . $users->count() . ' usuarios con este departamento. ';
+        } 
+
+        // Si hay posts asignados a este departamento, agregar al mensaje
+        if ($posts->count() > 0) {
+            $messageError .= 'No se puede eliminar este departamento porque tiene ' . $posts->count() . ' FAQS con este departamento. ';
+        }
+
+        // Si hay un mensaje de error, retornar a la vista con el mensaje
+        if ($messageError != '') {
+            return Inertia::render('Admin/Departments/DepartmentIndex', ['messageError' => $messageError]);
+        } else {
+            // Eliminar la categoria
+            $department->delete();
+        }
+
+        return back();
+    }
     
     
 }

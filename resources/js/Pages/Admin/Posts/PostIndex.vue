@@ -19,14 +19,29 @@ import Swal from "sweetalert2";
 // defineProps(["posts"]);
 const props = defineProps({
     posts: Object,
+    categories: Object,
     filters: Object,
     from: Number, //propiedad from de la paginacion de laravel, representa el numero del primer elemento de lla pagina actual
 });
 // Buscador de registros, filters mantiene busqueda al cambiar pagina
 const search = ref(props.filters.search);
+// Añade una nueva propiedad ref para la categoría seleccionada
+const selectedCategory = ref(props.filters.category_id);
 const perPage = ref(5);
-
+// const open = ref(false);
 // instancia router
+// Añade un observador para la categoría seleccionada
+watch(selectedCategory, (value) => {
+    router.get(
+        "/posts",
+        { search: search.value, perPage: perPage.value, category_id: value },
+        {
+            preserveState: true,
+            replace: true,
+        }
+    );
+});
+
 watch(search, (value) => {
     router.get(
         "/posts",
@@ -41,7 +56,11 @@ watch(search, (value) => {
 function getPosts() {
     router.get(
         "/posts",
-        { perPage: perPage.value, search: search.value },
+        {
+            perPage: perPage.value,
+            search: search.value,
+            category_id: selectedCategory.value,
+        },
         {
             preserveState: true,
             replace: true,
@@ -50,7 +69,8 @@ function getPosts() {
 }
 
 const form = useForm({});
-const { hasPermission } = usePermission();
+// const { hasPermission } = usePermission();
+const { hasRole, hasRoles } = usePermission();
 const confirmDeletePost = (id) => {
     Swal.fire({
         title: "Eliminar Faqs",
@@ -98,7 +118,6 @@ const confirmDeletePost = (id) => {
                 </Link>
                 <!-- </template> -->
                 <h1>Posts Index Page</h1>
-                
             </div>
 
             <div class="mt-6">
@@ -120,12 +139,30 @@ const confirmDeletePost = (id) => {
                                         class="px-8 py-3 w-full md:w-2/6 rounded-md bg-gray-200 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 focus:border-gray-200" />
                                 </div>
                             </div>
+
+                            <div class="flex mr-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="#e5e7eb" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="#e5e7eb" class="w-16 h-12">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+                                </svg>
+                                <select v-model="selectedCategory" 
+                                    class="px-4 pr-8 py-3 w-full rounded-md bg-gray-200 border-transparent focus:border-gray-500 hover:bg-gray-300 focus:bg-white focus:ring-0 text-gray-500 focus:border-gray-200 transition-all duration-500 ease-in-out font-bold">
+                                    <option value="">
+                                        Todas las categorías
+                                    </option>
+                                    <option v-for="category in categories" :value="category.id">
+                                        {{ category.name }}
+                                    </option>
+                                </select>
+                            </div>
                             <div class="flex">
                                 <select v-model="perPage" @change="getPosts"
-                                    class="px-4 pr-8 py-3 w-full rounded-md bg-gray-200 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-gray-500 focus:border-gray-200">
+                                    class="px-4 pr-8 py-3 w-full rounded-md bg-gray-200 border-transparent focus:border-gray-500 hover:bg-gray-300 focus:bg-white focus:ring-0 text-gray-500 focus:border-gray-200 transition-all duration-500 ease-in-out">
                                     <option value="5">Mostrar 5</option>
                                     <option value="10">Mostrar 10</option>
                                     <option value="15">Mostrar 15</option>
+                                    <option value="30">Mostrar 30</option>
                                 </select>
                             </div>
                         </div>
@@ -139,8 +176,17 @@ const confirmDeletePost = (id) => {
                             <TableHeaderCell>Titulo</TableHeaderCell>
                             <TableHeaderCell>Categoria</TableHeaderCell>
                             <TableHeaderCell>SubCategoria</TableHeaderCell>
+                            <template v-if="
+                                hasRoles(['admin', 'moderador', 'escritor'])
+                            ">
+                                <TableHeaderCell>Departamento</TableHeaderCell>
+                            </template>
                             <TableHeaderCell>Descripcion</TableHeaderCell>
-                            <TableHeaderCell>Accion</TableHeaderCell>
+                            <template v-if="
+                                hasRoles(['admin', 'moderador', 'escritor'])
+                            ">
+                                <TableHeaderCell>Accion</TableHeaderCell>
+                            </template>
                         </TableRow>
                     </template>
                     <template #default>
@@ -148,32 +194,50 @@ const confirmDeletePost = (id) => {
                             <TableDataCell>{{ from + i }}</TableDataCell>
                             <TableDataCell>{{ post.title }}</TableDataCell>
                             <TableDataCell>{{ post.category }}</TableDataCell>
-                            <TableDataCell>{{ post.subcategory }}</TableDataCell>
+                            <TableDataCell>{{
+                                post.subcategory
+                            }}</TableDataCell>
+                            <template v-if="
+                                hasRoles(['admin', 'moderador', 'escritor'])
+                            ">
+                                <TableDataCell>{{
+                                    post.department
+                                }}</TableDataCell>
+                            </template>
                             <!-- FUncion slice para limitar la cantidad de caracteres a mostrar, funciona añade ... si el texto es mayor a 50 caracteres -->
-                            <TableDataCell>{{ post.description.slice(0, 40) + (post.description.length > 50 ? '...' : '') }}</TableDataCell>
-                            <TableDataCell class="space-x-4">
-                                <!-- <template v-if="hasPermission('Editar FAQ')">  -->
-                                <Link :href="route('posts.edit', post.id)" as="button"
-                                    class="px-2 py-2 text-white font-semibold bg-blue-500 hover:bg-blue-600 rounded">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                </svg>
-                                </Link>
-                                <!-- </template> -->
-                                <!-- 
-                          <template v-if="hasPermission('Eliminar FAQ')">  -->
-                                <button @click.prevent="confirmDeletePost(post.id)"
-                                    class="px-2 py-2 text-white font-semibold bg-red-500 hover:bg-red-600 rounded">
+                            <TableDataCell>{{
+                                post.description.slice(0, 40) +
+                                (post.description.length > 50 ? "..." : "")
+                            }}</TableDataCell>
+                            <template v-if="
+                                hasRoles(['admin', 'moderador', 'escritor'])
+                            ">
+                                <TableDataCell class="space-x-4">
+                                    <!-- <template v-if="hasPermission('Editar FAQ')">  -->
+                                    <Link :href="route('posts.edit', post.id)" as="button"
+                                        class="px-2 py-2 text-white font-semibold bg-blue-500 hover:bg-blue-600 rounded">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                     </svg>
-                                </button>
-                                <!-- </template> -->
-                            </TableDataCell>
+                                    </Link>
+                                    <!-- </template> -->
+                                    <!-- 
+                          <template v-if="hasPermission('Eliminar FAQ')">  -->
+                                    <button @click.prevent="
+                                        confirmDeletePost(post.id)
+                                        "
+                                        class="px-2 py-2 text-white font-semibold bg-red-500 hover:bg-red-600 rounded">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                        </svg>
+                                    </button>
+                                    <!-- </template> -->
+                                </TableDataCell>
+                            </template>
                         </TableRow>
                     </template>
                 </Table>

@@ -11,6 +11,7 @@ import VueMultiselect from "vue-multiselect";
 defineProps({
     categories: Array,
     subcategories: Array,
+    departments: Array,
 });
 
 const form = useForm({
@@ -18,6 +19,7 @@ const form = useForm({
     description: "",
     category_id: "",
     sub_category_id: "",
+    department_id: "",
 });
 
 const selectedCategory = ref(null); // Crea una referencia para la categoria seleccionado
@@ -31,6 +33,13 @@ const selectedSubCategory = ref(null); // Crea una referencia para la subcategor
 watch(selectedSubCategory, (newVal) => {
     if (newVal) {
         form.sub_category_id = newVal.id; // Actualiza la subcategoria_id en el formulario cuando se selecciona un nuevo subcategoria
+    }
+});
+
+const selectedDepartment = ref(null); // Crea una referencia para la subcategoria seleccionado
+watch(selectedDepartment, (newVal) => {
+    if (newVal) {
+        form.department_id = newVal.id; // Actualiza la subcategoria_id en el formulario cuando se selecciona un nuevo subcategoria
     }
 });
 </script>
@@ -77,6 +86,13 @@ watch(selectedSubCategory, (newVal) => {
                         <InputLabel for="subcategories" value="SubCategoria:" />
                         <VueMultiselect v-model="selectedSubCategory" :options="subcategories" :multiple="false"
                             :close-on-select="true" placeholder="Presiona para ver SubCategorias" label="name"
+                            track-by="id" />
+                    </div>
+
+                    <div class="mt-4">
+                        <InputLabel for="departments" value="Departamento:" />
+                        <VueMultiselect v-model="selectedDepartment" :options="departments" :multiple="false"
+                            :close-on-select="true" placeholder="presiona para ver Departamento" label="name"
                             track-by="id" />
                     </div>
 
