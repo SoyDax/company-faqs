@@ -1,79 +1,16 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-import InputError from "@/Components/InputError.vue";
-import InputLabel from "@/Components/InputLabel.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import TextInput from "@/Components/TextInput.vue";
-import { Head, Link, useForm } from "@inertiajs/vue3";
+import { Head, Link } from "@inertiajs/vue3";
 import { usePermission } from "@/composables/permissions";
-import VueMultiselect from "vue-multiselect";
-
-import { onMounted, watch, ref } from "vue";
 
 const props = defineProps({
     post: {
         type: Object,
         required: true,
     },
-    categories: {
-        type: Object,
-        required: true,
-    },
-    subcategories: {
-        type: Object,
-        required: true,
-    },
-    departments: {
-        type: Object,
-        required: true,
-    },
 });
 const { hasRoles } = usePermission();
-const form = useForm({
-    title: props.post?.title,
-    category_id: props.post?.category_id,
-    sub_category_id: props.post?.sub_category_id,
-    department_id: props.post?.department_id,
-    description: props.post?.description,
-});
 
-const selectedCategory = ref(null); // Crea una referencia para la categoria seleccionado
-watch(selectedCategory, (newVal) => {
-    if (newVal) {
-        form.category_id = newVal.id; // Actualiza la categoria_id en el formulario cuando se selecciona un nuevo categoria
-    }
-});
-
-const selectedSubCategory = ref(null); // Crea una referencia para la subcategoria seleccionado
-watch(selectedSubCategory, (newVal) => {
-    if (newVal) {
-        form.sub_category_id = newVal.id; // Actualiza la subcategoria_id en el formulario cuando se selecciona un nuevo subcategoria
-    }
-});
-
-const selectedDepartment = ref(null); // Crea una referencia para la subcategoria seleccionado
-watch(selectedDepartment, (newVal) => {
-    if (newVal) {
-        form.department_id = newVal.id; // Actualiza la subcategoria_id en el formulario cuando se selecciona un nuevo subcategoria
-    }
-});
-
-const submit = () => {
-    form.put(route("posts.update", props.post?.id));
-};
-onMounted(() => {
-    selectedCategory.value = props.post?.category_id;
-    selectedSubCategory.value = props.post?.sub_category_id;
-    selectedDepartment.value = props.post?.department_id;
-});
-watch(
-    () => props.post,
-    () => {
-        selectedCategory.value = props.post?.category_id;
-        selectedSubCategory.value = props.post?.sub_category_id;
-        selectedDepartment.value = props.post?.department_id;
-    }
-);
 </script>
 
 <template>
@@ -104,17 +41,17 @@ watch(
                     <span class="font-semibold mx-1">
                         {{ post.updated_at }}</span>
                 </div>
-                <template v-if=" hasRoles(['admin', 'moderador', 'escritor'])">
-                <div class="flex mt-3 text-xs">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
-                                </svg>
-                    <span class="font-semibold mx-1">
-                        {{ post.department }}</span>
-                </div>
-                 </template>
+                <template v-if="hasRoles(['admin', 'moderador', 'escritor'])">
+                    <div class="flex mt-3 text-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+                        </svg>
+                        <span class="font-semibold mx-1">
+                            {{ post.department }}</span>
+                    </div>
+                </template>
                 <h5 class="mb-2 text-4xl font-bold tracking-tight text-gray-700 hover:text-indigo-800">
                     {{ post.title }}
                 </h5>
@@ -141,62 +78,17 @@ watch(
                         {{ post.subcategory }}</span>
                 </div>
 
+                <div class="mt-10 mb-3 font-normal text-gray-700 dark:text-gray-400" v-html="post.description">
+                </div>
 
-                
-                <div class="flex mt-10">
+                <!-- <div class="flex mt-10">
                     <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 ">
                         {{ post.description }}
                     </p>
-                </div>
+                </div> -->
 
 
-                <!-- <form @submit.prevent="submit">
-                    <div class="mt-4">
-                        <InputLabel for="title" value="Publicacion" />
-
-                        <TextInput id="title" type="text" class="mt-1 block w-full" v-model="form.title" autofocus
-                            autocomplete="title" />
-
-                        <InputError class="mt-2" :message="form.errors.title" />
-                    </div>
-                    <div class="mt-4">
-                        <InputLabel for="categories" value="Categoria:" />
-                        <VueMultiselect v-model="selectedCategory" :options="categories" :multiple="false"
-                            :close-on-select="true" :placeholder="post.category" label="name" track-by="id" />
-                    </div>
-
-                    <div class="mt-4">
-                        <InputLabel for="subcategories" value="SubCategoria:" />
-                        <VueMultiselect v-model="selectedSubCategory" :options="subcategories" :multiple="false"
-                            :close-on-select="true" :placeholder="post.subcategory" label="name" track-by="id" />
-                    </div>
-
-                    <template v-if="hasPermissions(['Editar departamento'])">
-                        <div class="mt-4">
-                            <InputLabel for="departments" value="Departamento:" />
-                            <VueMultiselect v-model="selectedDepartment" :options="departments" :multiple="false"
-                                :close-on-select="true" :placeholder="post.department" label="name" track-by="id" />
-                        </div>
-                    </template>
-
-                    <div class="mt-4">
-                        <InputLabel for="description" value="Descripcion:" />
-
-                        <TextInput id="description" type="text" class="mt-1 block w-full" v-model="form.description"
-                            autofocus autocomplete="description" />
-
-                        <InputError class="mt-2" :message="form.errors.description" />
-                    </div>
-
-                    <div class="flex items-center mt-4">
-                        <PrimaryButton class="ms-0" :class="{ 'opacity-25': form.processing }"
-                            :disabled="form.processing">
-                            Actualizar
-                        </PrimaryButton>
-                    </div>
-                </form> -->
             </div>
         </div>
     </AdminLayout>
 </template>
-<style src="vue-multiselect/dist/vue-multiselect.css"></style>

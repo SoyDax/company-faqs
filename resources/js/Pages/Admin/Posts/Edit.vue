@@ -1,14 +1,18 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
+import { Head, Link, useForm } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
+import { Editor, tinymce, contentUiSkinCss, contentCss } from '@/composables/tinymceImports';
+import { loadCloudinaryWidget, openUploadWidget } from '@/composables/cloudinaryWidget';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
-import { Head, Link, useForm } from "@inertiajs/vue3";
-import { usePermission } from "@/composables/permissions";
-import VueMultiselect from "vue-multiselect";
-
 import { onMounted, watch, ref } from "vue";
+import VueMultiselect from "vue-multiselect";
+import { usePermission } from "@/composables/permissions";
+
+//importa el script de cloudinary para subir imagenes en el editor de texto de tinymce 
+onMounted(loadCloudinaryWidget);
 
 const props = defineProps({
     post: {
@@ -36,6 +40,26 @@ const form = useForm({
     department_id: props.post?.department_id,
     description: props.post?.description,
 });
+
+//la configuración de TinyMCE para el editor de texto de descripción
+const tinymeceConfig = {
+    content_css: false,
+    skin: false,
+    content_style: contentUiSkinCss.toString() + '\n' + contentCss.toString(),
+    height: 500,
+    menubar: true,
+    promotion: false,
+    plugins: [
+        'link', 'lists', 'image', 'anchor', 'wordcount', 'media', 'autolink', 'charmap', 'codesample', 'searchreplace', 'table', 'visualblocks', 'fullscreen', 'quickbars' , 
+    ],
+    toolbar:
+        'undo redo | aidialog aishortcuts | formatselect | styles fontsizeinput |  bold italic backcolor | \
+    alignleft aligncenter alignright alignjustify | \
+    bullist numlist outdent indent | removeformat | table link image | fullscreen',
+    quickbars_insert_toolbar: 'quicktable image media codesample',
+  quickbars_selection_toolbar: 'bold italic underline | blocks | bullist numlist | blockquote quicklink',
+    
+}
 
 const selectedCategory = ref(null); // Crea una referencia para la categoria seleccionado
 watch(selectedCategory, (newVal) => {
@@ -130,9 +154,23 @@ watch(
 
                     <div class="mt-4">
                         <InputLabel for="description" value="Descripcion:" />
+                        <div class="flex items-center mt-4 mb-3 ">    
+                            <PrimaryButton class="ms-0" @click="openUploadWidget($event)">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                                </svg>
+                                Cargar imagen
+                            </PrimaryButton>
+                        </div>
+                        <Editor                                           
+                            :init="tinymeceConfig"
+                            id="description"
+                            v-model="form.description"
+                            type="text"
+                        />
 
-                        <TextInput id="description" type="text" class="mt-1 block w-full" v-model="form.description"
-                            autofocus autocomplete="description" />
+                        <!-- <TextInput id="description" type="text" class="mt-1 block w-full" v-model="form.description"
+                            autofocus autocomplete="description" /> -->
 
                         <InputError class="mt-2" :message="form.errors.description" />
                     </div>

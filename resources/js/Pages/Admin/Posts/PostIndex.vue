@@ -1,16 +1,15 @@
 <script setup>
-import AdminLayout from "@/Layouts/AdminLayout.vue";
-
+import { defineProps, ref, watch } from "vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
-import { usePermission } from "@/composables/permissions";
-import { ref, watch, defineProps } from "vue";
 import { router } from "@inertiajs/vue3";
-import Table from "@/Components/Table.vue";
-import TableRow from "@/Components/TableRow.vue";
-import TableHeaderCell from "@/Components/TableHeaderCell.vue";
-import TableDataCell from "@/Components/TableDataCell.vue";
+import AdminLayout from "@/Layouts/AdminLayout.vue";
 import Pagination from "@/Components/Pagination.vue";
 import Swal from "sweetalert2";
+import Table from "@/Components/Table.vue";
+import TableDataCell from "@/Components/TableDataCell.vue";
+import TableHeaderCell from "@/Components/TableHeaderCell.vue";
+import TableRow from "@/Components/TableRow.vue";
+import { usePermission } from "@/composables/permissions";
 
 //  defineProps({
 //    posts: Object,
@@ -206,10 +205,8 @@ const confirmDeletePost = (id) => {
                                     }}</TableDataCell>
                             </template>
                             <!-- FUncion slice para limitar la cantidad de caracteres a mostrar, funciona añade ... si el texto es mayor a 50 caracteres -->
-                            <TableDataCell>{{
-                                post.description.slice(0, 40) +
-                                (post.description.length > 50 ? "..." : "")
-                                }}</TableDataCell>
+                         <TableDataCell v-html="post.description.slice(0, 40) + (post.description.length > 50 ? '...' : '')">
+                        </TableDataCell>
 
                             <TableDataCell class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                                 <!-- <template v-if="hasPermission('Editar FAQ')">  -->
