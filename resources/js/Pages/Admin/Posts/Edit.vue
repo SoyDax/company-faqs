@@ -105,7 +105,7 @@ watch(
     <Head title="Actualizar Faqs" />
 
     <AdminLayout>
-        <div class="max-w-7xl mx-auto py-4">
+        <div class="fullscreen mx-auto py-4">
             <div class="flex justify-between">
                 <Link :href="route('posts.index')"
                     class="px-3 py-2 text-white font-semibold bg-gray-500 hover:bg-gray-600 rounded">
@@ -117,7 +117,7 @@ watch(
                 Regresar</Link>
             </div>
 
-            <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
+            <div class="mt-6 fullscreen mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
                 <h1 class="text-2xl font-semibold text-indigo-700">
                     ACTUALIZAR FAQ
                 </h1>
@@ -187,3 +187,8 @@ watch(
     </AdminLayout>
 </template>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
+<style>
+.fullscreen {
+  min-width: 80vw; /* 100% del ancho del viewport */
+}
+</style>

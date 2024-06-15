@@ -20,7 +20,7 @@ const form = useForm({
     <Head title="Crear nueva subcategoria" />
 
     <AdminLayout>
-        <div class="max-w-7xl mx-auto py-4">
+        <div class="fullscreen mx-auto py-4">
             <div class="flex justify-between">
                 <Link :href="route('subcategories.index')"
                     class="px-3 py-2 text-white font-semibold bg-gray-500 hover:bg-gray-600 rounded">
@@ -32,7 +32,7 @@ const form = useForm({
                 Regresar</Link>
             </div>
 
-            <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
+            <div class="mt-6 fullscreen mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
                 <h1 class="text-2xl font-semibold text-indigo-700">
                     CREAR NUEVA SUBCATEGORIA
                 </h1>
@@ -57,3 +57,8 @@ const form = useForm({
         </div>
     </AdminLayout>
 </template>
+<style>
+.fullscreen {
+  min-width: 80vw; /* 100% del ancho del viewport */
+}
+</style>

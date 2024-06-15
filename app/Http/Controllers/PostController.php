@@ -29,7 +29,7 @@ class PostController extends Controller
         $isAdmin = auth()->user()->hasRole('admin') || auth()->user()->hasPermissionTo('Editar departamento');
         
         // Paginacion que este muest5ra predeterminado 5
-        $perPage = $request->input('perPage') ?:5;
+        $perPage = $request->input('perPage') ?:10;
 
         // Recoge todos los posts del departamento
         $departmentPostsQuery = Post::query()

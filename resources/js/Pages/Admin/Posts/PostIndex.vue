@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
 import { router } from "@inertiajs/vue3";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
@@ -27,7 +27,7 @@ const showSelect = ref(false);
 const search = ref(props.filters.search);
 // Añade una nueva propiedad ref para la categoría seleccionada
 const selectedCategory = ref(props.filters.category_id);
-const perPage = ref(5);
+const perPage = ref(10);
 // const open = ref(false);
 // instancia router
 // Añade un observador para la categoría seleccionada
@@ -103,7 +103,7 @@ const confirmDeletePost = (id) => {
     <Head title="Posts" />
 
     <AdminLayout>
-        <div class="max-w-7xl mx-auto py-4">
+        <div class="fullscreen mx-auto py-4">
             <div class="flex justify-between">
                 <!-- <template v-if="hasPermission('Crear FAQ')">  -->
 
@@ -117,7 +117,7 @@ const confirmDeletePost = (id) => {
                 CREAR
                 </Link>
                 <!-- </template> -->
-                <h1>Posts Index Page</h1>
+               
             </div>
 
             <div class="mt-6">
@@ -181,7 +181,7 @@ const confirmDeletePost = (id) => {
                                 <TableHeaderCell>Departamento</TableHeaderCell>
                             </template>
                             <TableHeaderCell>Descripcion</TableHeaderCell>
-                            <TableHeaderCell>Accion</TableHeaderCell>
+                            <TableHeaderCell class="flex justify-end mr-10"> Acciones</TableHeaderCell>
 
                         </TableRow>
                     </template>
@@ -208,7 +208,7 @@ const confirmDeletePost = (id) => {
                          <TableDataCell v-html="post.description.slice(0, 40) + (post.description.length > 50 ? '...' : '')">
                         </TableDataCell>
 
-                            <TableDataCell class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                            <TableDataCell class="flex justify-end space-x-2">
                                 <!-- <template v-if="hasPermission('Editar FAQ')">  -->
 
                                 <Link :href="route('posts.show', post.id)" as="button"
@@ -258,3 +258,8 @@ const confirmDeletePost = (id) => {
         </div>
     </AdminLayout>
 </template>
+<style>
+.fullscreen {
+  min-width: 80vw; /* 100% del ancho del viewport */
+}
+</style>

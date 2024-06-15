@@ -19,7 +19,7 @@ defineProps({
                 :href="link.url"
                 v-html="link.label"
                 class="mb-1 mr-1 px-4 py-3 text-gray-400 text-sm leading-4 bg-white rounded hover:bg-gray-200 focus:text-gray-900 focus:border-indigo-500"
-                :class="{ 'bg-indigo-300 text-gray-500 ': link.active }"
+                :class="{ 'bg-gray-300 text-gray-500 ': link.active }"
             ></Link>
         </template>
     </div>

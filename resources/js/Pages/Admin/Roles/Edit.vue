@@ -1,14 +1,11 @@
 <script setup>
 import AdminLayout from "@/Layouts/AdminLayout.vue";
-
 import { Head, Link, useForm } from "@inertiajs/vue3";
-
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import VueMultiselect from "vue-multiselect";
-
 import Table from "@/Components/Table.vue";
 import TableRow from "@/Components/TableRow.vue";
 import TableHeaderCell from "@/Components/TableHeaderCell.vue";
@@ -43,7 +40,7 @@ watch(
     <Head title="Actualizar rol" />
 
     <AdminLayout>
-        <div class="max-w-7xl mx-auto py-4">
+        <div class="fullscreen mx-auto py-4">
             <div class="flex justify-between">
                 <Link :href="route('roles.index')"
                     class="px-3 py-2 text-white font-semibold bg-gray-500 hover:bg-gray-600 rounded">
@@ -55,7 +52,7 @@ watch(
                 Regresar</Link>
             </div>
 
-            <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
+            <div class="mt-6 fullscreen mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
                 <h1 class="text-2xl font-semibold text-indigo-700">
                     Actualizar ROL
                 </h1>
@@ -84,7 +81,7 @@ watch(
                     </div>
                 </form>
             </div>
-            <div class="mt-6 max-w-6xl mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
+            <div class="mt-6 fullscreen mx-auto bg-slate-100 shadow-lg rounded-lg p-6">
                 <h1 class="text-2xl text-center font-semibold text-indigo-700">
                     PERMISOS
                 </h1>
@@ -95,7 +92,9 @@ watch(
                                 <TableHeaderCell>ID</TableHeaderCell>
                                 <TableHeaderCell>Nombre</TableHeaderCell>
 
-                                <TableHeaderCell>Accion</TableHeaderCell>
+                                <TableHeaderCell class="flex justify-end mx-4">
+                                Accion
+                                </TableHeaderCell>
                             </TableRow>
                         </template>
                         <template #default>
@@ -107,7 +106,7 @@ watch(
                                 <TableDataCell>{{
                                     rolePermission.name
                                     }}</TableDataCell>
-                                <TableDataCell class="space-x-4">
+                                <TableDataCell class="flex justify-end mx-4">
                                     <Link :href="route('roles.permissions.destroy', [
                                         role.id,
                                         rolePermission.id,
@@ -129,3 +128,8 @@ watch(
     </AdminLayout>
 </template>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
+<style>
+.fullscreen {
+  min-width: 80vw; /* 100% del ancho del viewport */
+}
+</style>

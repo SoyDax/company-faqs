@@ -78,7 +78,7 @@ const confirmDeleteSubcategories = (id) => {
   <Head title="SubCategoria" />
 
   <AdminLayout>
-    <div class="max-w-7xl mx-auto py-4">
+    <div class="fullscreen mx-auto py-4">
       <div class="flex justify-between">
         <Link :href="route('subcategories.create')"
           class="px-3 py-2 text-white font-semibold bg-green-500 hover:bg-green-600 rounded">
@@ -89,7 +89,7 @@ const confirmDeleteSubcategories = (id) => {
         </svg>
         CREAR
         </Link>
-        <h1>SubCategories Index Page</h1>
+      
       </div>
       <div class="mt-6">
         <!-- Buscador y dropdown -->
@@ -128,14 +128,16 @@ const confirmDeleteSubcategories = (id) => {
               <TableHeaderCell>#</TableHeaderCell>
               <TableHeaderCell>SubCategorias</TableHeaderCell>
 
-              <TableHeaderCell>Accion</TableHeaderCell>
+              <TableHeaderCell class="flex justify-end mx-4">
+                Acciones
+              </TableHeaderCell>
             </TableRow>
           </template>
           <template #default>
             <TableRow v-for="(subcategory, i) in subcategories.data" :key="subcategory.id" class="border-b">
               <TableDataCell>{{ from + i }}</TableDataCell>
               <TableDataCell>{{ subcategory.name }}</TableDataCell>
-              <TableDataCell class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+              <TableDataCell class="flex justify-end space-x-2">
                 <Link :href="route('subcategories.edit', subcategory.id)
                   " as="button"
                   class="px-2 py-2 text-white font-semibold bg-blue-500 hover:bg-blue-600 rounded">
@@ -165,3 +167,8 @@ const confirmDeleteSubcategories = (id) => {
     </div>
   </AdminLayout>
 </template>
+<style>
+.fullscreen {
+  min-width: 80vw; /* 100% del ancho del viewport */
+}
+</style>

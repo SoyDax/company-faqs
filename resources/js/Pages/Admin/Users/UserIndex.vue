@@ -2,7 +2,7 @@
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 
 import { Head, Link, useForm } from "@inertiajs/vue3";
-import { ref, watch, defineProps } from "vue";
+import { ref, watch } from "vue";
 import { router } from "@inertiajs/vue3";
 import Table from "@/Components/Table.vue";
 import TableRow from "@/Components/TableRow.vue";
@@ -78,7 +78,7 @@ const confirmDeleteuser = (id) => {
   <Head title="Users index" />
 
   <AdminLayout>
-    <div class="max-w-7xl mx-auto py-4">
+    <div class="fullscreen mx-auto py-4">
       <div class="flex justify-between">
         <Link :href="route('users.create')"
           class="px-3 py-2 text-white font-semibold bg-green-500 hover:bg-green-600 rounded">
@@ -89,7 +89,6 @@ const confirmDeleteuser = (id) => {
         </svg>
         CREAR
         </Link>
-        <h1>User Index Page</h1>
       </div>
       <div class="mt-6">
         <!-- Buscador y dropdown -->
@@ -129,7 +128,9 @@ const confirmDeleteuser = (id) => {
               <TableHeaderCell>Nombre</TableHeaderCell>
               <TableHeaderCell>Email</TableHeaderCell>
               <TableHeaderCell>Departamento</TableHeaderCell>
-              <TableHeaderCell>Accion</TableHeaderCell>
+              <TableHeaderCell class="flex justify-end mx-4">
+                Acciones
+              </TableHeaderCell>
             </TableRow>
           </template>
           <template #default>
@@ -138,7 +139,7 @@ const confirmDeleteuser = (id) => {
               <TableDataCell>{{ user.name }}</TableDataCell>
               <TableDataCell>{{ user.email }}</TableDataCell>
               <TableDataCell>{{ user.department }}</TableDataCell>
-              <TableDataCell class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+              <TableDataCell class="flex justify-end space-x-2">
                 <Link :href="route('users.edit', user.id)" as="button"
                   class="px-2 py-2 text-white font-semibold bg-blue-500 hover:bg-blue-600 rounded">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -166,3 +167,8 @@ const confirmDeleteuser = (id) => {
     </div>
   </AdminLayout>
 </template>
+<style>
+.fullscreen {
+  min-width: 80vw; /* 100% del ancho del viewport */
+}
+</style>

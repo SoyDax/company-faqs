@@ -78,7 +78,7 @@ const confirmDeleteDepartment = (id) => {
   <Head title="Department" />
 
   <AdminLayout>
-    <div class="max-w-7xl mx-auto py-4">
+    <div class="fullscreen mx-auto py-4">
       <div class="flex justify-between">
         <Link :href="route('departments.create')"
           class="px-3 py-2 text-white font-semibold bg-green-500 hover:bg-green-600 rounded">
@@ -89,7 +89,7 @@ const confirmDeleteDepartment = (id) => {
         </svg>
         CREAR
         </Link>
-        <h1>Department Index Page</h1>
+       
       </div>
       <div class="mt-6">
         <!-- Buscador y dropdown -->
@@ -128,14 +128,16 @@ const confirmDeleteDepartment = (id) => {
               <TableHeaderCell>#</TableHeaderCell>
               <TableHeaderCell>Departamento</TableHeaderCell>
 
-              <TableHeaderCell>Accion</TableHeaderCell>
+              <TableHeaderCell class="flex justify-end mx-4">
+                Acciones
+              </TableHeaderCell>
             </TableRow>
           </template>
           <template #default>
             <TableRow v-for="(department, i) in departments.data" :key="department.id" class="border-b">
               <TableDataCell>{{ from + i }}</TableDataCell>
               <TableDataCell>{{ department.name }}</TableDataCell>
-              <TableDataCell class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+              <TableDataCell class="flex justify-end space-x-2">
                 <Link :href="route('departments.edit', department.id)
                   " as="button"
                   class="px-2 py-2 text-white font-semibold bg-blue-500 hover:bg-blue-600 rounded">
@@ -165,3 +167,8 @@ const confirmDeleteDepartment = (id) => {
     </div>
   </AdminLayout>
 </template>
+<style>
+.fullscreen {
+  min-width: 80vw; /* 100% del ancho del viewport */
+}
+</style>

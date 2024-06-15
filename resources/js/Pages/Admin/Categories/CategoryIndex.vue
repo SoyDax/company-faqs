@@ -78,7 +78,7 @@ const confirmDeleteCategory = (id) => {
   <Head title="Category" />
 
   <AdminLayout>
-    <div class="max-w-7xl mx-auto py-4">
+    <div class="fullscreen mx-auto py-4">
       <div class="flex justify-between">
         <Link :href="route('categories.create')"
           class="px-3 py-2 text-white font-semibold bg-green-500 hover:bg-green-600 rounded">
@@ -89,7 +89,7 @@ const confirmDeleteCategory = (id) => {
         </svg>
         CREAR
         </Link>
-        <h1>Category Index Page</h1>
+        
       </div>
       <div class="mt-6">
         <!-- Buscador y dropdown -->
@@ -121,21 +121,23 @@ const confirmDeleteCategory = (id) => {
             </div>
           </div>
         </div>
-        <!-- Tabla de departamentos -->
+        <!-- Tabla de categoria -->
         <Table>
           <template #header>
             <TableRow>
               <TableHeaderCell>#</TableHeaderCell>
               <TableHeaderCell>Categoria</TableHeaderCell>
 
-              <TableHeaderCell>Accion</TableHeaderCell>
+              <TableHeaderCell class="flex justify-end mx-4">
+              Acciones
+            </TableHeaderCell>
             </TableRow>
           </template>
           <template #default>
             <TableRow v-for="(category, i) in categories.data" :key="category.id" class="border-b">
               <TableDataCell>{{ from + i }}</TableDataCell>
               <TableDataCell>{{ category.name }}</TableDataCell>
-              <TableDataCell class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+              <TableDataCell class="flex justify-end space-x-2">
                 <Link :href="route('categories.edit', category.id)
                   " as="button" class="px-2 py-2 text-white font-semibold bg-blue-500 hover:bg-blue-600 rounded">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -164,3 +166,8 @@ const confirmDeleteCategory = (id) => {
     </div>
   </AdminLayout>
 </template>
+<style>
+.fullscreen {
+  min-width: 80vw; /* 100% del ancho del viewport */
+}
+</style>

@@ -76,7 +76,7 @@ const confirmDeleteRol = (id) => {
     <Head title="Roles" />
 
     <AdminLayout>
-        <div class="max-w-7xl mx-auto py-4">
+        <div class="fullscreen mx-auto py-4">
             <div class="flex justify-between">
 
                 <Link :href="route('roles.create')"
@@ -88,7 +88,7 @@ const confirmDeleteRol = (id) => {
                 </svg>
                 CREAR
                 </Link>
-                <h1>Role Index Page</h1>
+              
             </div>
             <div class="mt-6">
                 <!-- Buscador y dropdown -->
@@ -126,14 +126,16 @@ const confirmDeleteRol = (id) => {
                         <TableRow>
                             <TableHeaderCell>#</TableHeaderCell>
                             <TableHeaderCell>Nombre</TableHeaderCell>
-                            <TableHeaderCell>Accion</TableHeaderCell>
+                            <TableHeaderCell class="flex justify-end mx-4">
+                            Acciones
+                            </TableHeaderCell>
                         </TableRow>
                     </template>
                     <template #default>
                         <TableRow v-for="(role, i) in roles.data" :key="role.id" class="border-b">
                             <TableDataCell>{{ from + i }}</TableDataCell>
                             <TableDataCell>{{ role.name }}</TableDataCell>
-                            <TableDataCell class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                            <TableDataCell class="flex justify-end space-x-2">
                                 <Link :href="route('roles.edit', role.id)" as="button"
                                     class="px-2 py-2 text-white font-semibold bg-blue-500 hover:bg-blue-600 rounded">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -163,3 +165,8 @@ const confirmDeleteRol = (id) => {
         </div>
     </AdminLayout>
 </template>
+<style>
+.fullscreen {
+  min-width: 80vw; /* 100% del ancho del viewport */
+}
+</style>
